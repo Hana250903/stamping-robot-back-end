@@ -12,8 +12,9 @@ EXPOSE 8081
 FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 ARG BUILD_CONFIGURATION=Release
 WORKDIR /src
-COPY ["StampingRobot.API.csproj", "."]
-RUN dotnet restore "./StampingRobot.API.csproj"
+COPY ["StampingRobot.API/StampingRobot.API.csproj", "StampingRobot.API/"]
+WORKDIR "/src/StampingRobot.API"
+RUN dotnet restore "StampingRobot.API.csproj"
 COPY . .
 WORKDIR "/src/."
 RUN dotnet build "./StampingRobot.API.csproj" -c $BUILD_CONFIGURATION -o /app/build
