@@ -18,7 +18,6 @@
     <Folder Include="BussinessModels\" />
     <Folder Include="Helpers\" />
     <Folder Include="Ultils\" />
-    <Folder Include="Services\Interface\" />
   </ItemGroup>
 
 </Project>
