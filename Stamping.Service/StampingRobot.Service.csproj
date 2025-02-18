@@ -15,7 +15,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="BussinessModels\" />
     <Folder Include="Helpers\" />
     <Folder Include="Ultils\" />
   </ItemGroup>

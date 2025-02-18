@@ -1,4 +1,6 @@
 ﻿using AutoMapper;
+using StamingRobot.Repository.Entities;
+using StampingRobot.Service.BussinessModels;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,7 +13,14 @@ namespace StampingRobot.Service.Mapper
     {
         public MapperConfigProfile()
         {
-            
+            CreateMap<ProductModel, Product>().ReverseMap();
+            CreateMap<RobotModel, Robot>().ReverseMap();
+            CreateMap<StampModel, Stamp>().ReverseMap();
+            CreateMap<StampingSessionModel, StampingSession>().ReverseMap();
+            CreateMap<StampingTaskModel, StampingTask>().ReverseMap();
+            CreateMap<StampingProcessModel, StampingProcess>().ReverseMap();
+            CreateMap<UserModel, User>().ReverseMap();
+            CreateMap<TaskAssignmentModel, TaskAssignment>().ReverseMap();
         }
     }
 }
