@@ -1,4 +1,6 @@
-﻿using StamingRobot.Repository.Entities;
+﻿using Microsoft.EntityFrameworkCore;
+using StamingRobot.Repository.Commons;
+using StamingRobot.Repository.Entities;
 using StamingRobot.Repository.Repositories.Interface;
 using System;
 using System.Collections.Generic;
@@ -15,6 +17,29 @@ namespace StamingRobot.Repository.Repositories
         public RobotRepository(StampingRobotContext dbContext) : base(dbContext)
         {
             _dbContext = dbContext;
+        }
+        
+        public async Task<List<Robot>> GetAllWithFilter(Filter filter)
+        {
+            var list = _dbContext.Robots
+                .Where(c => (filter.name == null || c.Model.Contains(filter.name, StringComparison.OrdinalIgnoreCase)))
+                .Select(c => new
+                {
+                    c.Model,
+                    c.Status,
+                    c.Position,
+                    c.UserId,
+                }).AsQueryable();
+
+            var result = list.Select(c => new Robot
+            {
+                Model = c.Model,
+                Status = c.Status,
+                Position = c.Position,
+                UserId = c.UserId,
+            }).AsNoTracking();
+
+            return await result.ToListAsync();
         }
     }
 }

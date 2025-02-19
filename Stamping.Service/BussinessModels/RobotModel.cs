@@ -15,6 +15,6 @@ namespace StampingRobot.Service.BussinessModels
 
         public string Position { get; set; }
 
-        public int UserId { get; set; }
+        public int? UserId { get; set; }
     }
 }

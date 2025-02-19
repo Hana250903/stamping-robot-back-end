@@ -11,7 +11,7 @@ public partial class Robot : BaseEntity
 
     public string Position { get; set; }
 
-    public int UserId { get; set; }
+    public int? UserId { get; set; }
 
     public virtual ICollection<StampingSession> StampingSessions { get; set; } = new List<StampingSession>();
 

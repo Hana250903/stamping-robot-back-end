@@ -1,6 +1,11 @@
-using Microsoft.AspNetCore.Mvc.Infrastructure;
+    using Microsoft.AspNetCore.Mvc.Infrastructure;
 using Microsoft.EntityFrameworkCore;
 using StamingRobot.Repository.Entities;
+using StamingRobot.Repository.Repositories.Interface;
+using StamingRobot.Repository.Repositories;
+using StampingRobot.API;
+using StampingRobot.Service.Services.Interface;
+using StampingRobot.Service.Services;
 using System.Text.Json.Serialization;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -41,6 +46,8 @@ builder.Services.AddDbContext<StampingRobotContext>(options =>
                 .EnableDetailedErrors()
                 .EnableSensitiveDataLogging();
 });
+
+builder.Services.AddWebAPIService();
 
 var app = builder.Build();
 
