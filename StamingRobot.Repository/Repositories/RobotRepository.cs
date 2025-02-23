@@ -19,10 +19,10 @@ namespace StamingRobot.Repository.Repositories
             _dbContext = dbContext;
         }
         
-        public async Task<List<Robot>> GetAllWithFilter(Filter filter)
+        public async Task<List<Robot>> GetAllWithFilter(FilterRobot filter)
         {
             var list = _dbContext.Robots
-                .Where(c => (filter.name == null || c.Model.Contains(filter.name, StringComparison.OrdinalIgnoreCase)))
+                .Where(c => (filter.Name == null || c.Model.Contains(filter.Name, StringComparison.OrdinalIgnoreCase)))
                 .Select(c => new
                 {
                     c.Model,

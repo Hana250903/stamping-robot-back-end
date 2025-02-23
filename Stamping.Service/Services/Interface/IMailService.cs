@@ -1,5 +1,4 @@
 ﻿using StamingRobot.Repository.Commons;
-using StamingRobot.Repository.Entities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,8 +7,8 @@ using System.Threading.Tasks;
 
 namespace StampingRobot.Service.Services.Interface
 {
-    public interface IRobotService
+    public interface IMailService
     {
-        Task<Pagination<Robot>> GetAllRobotPagination (PaginationParameter paginationParameter, FilterRobot filter);
+        Task SendEmailAsync(MailRequest mailRequest);
     }
 }

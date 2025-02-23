@@ -10,6 +10,6 @@ namespace StamingRobot.Repository.Repositories.Interface
 {
     public interface IRobotRepository : IGenericRepository<Robot>
     {
-        Task<List<Robot>> GetAllWithFilter(Filter filter);
+        Task<List<Robot>> GetAllWithFilter(FilterRobot filter);
     }
 }

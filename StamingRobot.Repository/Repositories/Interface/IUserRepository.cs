@@ -1,4 +1,5 @@
-﻿using StamingRobot.Repository.Entities;
+﻿using StamingRobot.Repository.Commons;
+using StamingRobot.Repository.Entities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,5 +10,7 @@ namespace StamingRobot.Repository.Repositories.Interface
 {
     public interface IUserRepository : IGenericRepository<User>
     {
+        Task<List<User>> GetAllUserWithFilter(FilterUser filter);
+        Task<User?> GetUserByEmail(string email);
     }
 }

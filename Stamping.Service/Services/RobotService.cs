@@ -23,7 +23,7 @@ namespace StampingRobot.Service.Services
             _mapper = mapper;
         }
 
-        public async Task<Pagination<Robot>> GetAllRobotPagination(PaginationParameter paginationParameter, Filter filter)
+        public async Task<Pagination<Robot>> GetAllRobotPagination(PaginationParameter paginationParameter, FilterRobot filter)
         {
             var list = await _robotRepository.GetAllWithFilter(filter);
 

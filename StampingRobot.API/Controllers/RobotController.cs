@@ -25,7 +25,7 @@ namespace StampingRobot.API.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetAllRobotsPagingAsync([FromQuery] PaginationParameter paginationParameter,[FromQuery] Filter filter)
+        public async Task<IActionResult> GetAllRobotsPagingAsync([FromQuery] PaginationParameter paginationParameter,[FromQuery] FilterRobot filter)
         {
             try
             {
