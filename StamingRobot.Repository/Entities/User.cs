@@ -12,11 +12,13 @@ public partial class User: BaseEntity
 
     public string Email { get; set; }
 
-    public string UserName { get; set; }
+    public string? GoogleId { get; set; }
 
-    public string Password { get; set; }
+    public string? Password { get; set; }
 
-    public int? CodeOtpemail { get; set; }
+    public int? CodeOtpEmail { get; set; }
+
+    public string? RefreshToken { get; set; }
 
     public Role Role { get; set; }
 

@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using StamingRobot.Repository.Entities;
@@ -11,9 +12,11 @@ using StamingRobot.Repository.Entities;
 namespace StamingRobot.Repository.Migrations
 {
     [DbContext(typeof(StampingRobotContext))]
-    partial class StampingRobotContextModelSnapshot : ModelSnapshot
+    [Migration("20250219010634_add_googleId")]
+    partial class add_googleId
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -349,8 +352,8 @@ namespace StamingRobot.Repository.Migrations
                         .HasColumnType("character varying(255)")
                         .HasColumnName("FullName");
 
-                    b.Property<string>("GoogleId")
-                        .HasColumnType("text")
+                    b.Property<int?>("GoogleId")
+                        .HasColumnType("integer")
                         .HasColumnName("GoogleId");
 
                     b.Property<bool>("IsDeleted")
@@ -370,14 +373,16 @@ namespace StamingRobot.Repository.Migrations
                         .HasColumnType("character varying(255)")
                         .HasColumnName("Phone");
 
-                    b.Property<string>("RefreshToken")
-                        .HasColumnType("text")
-                        .HasColumnName("RefreshToken");
-
                     b.Property<int>("Role")
                         .HasMaxLength(20)
                         .HasColumnType("integer")
                         .HasColumnName("Role");
+
+                    b.Property<string>("UserName")
+                        .IsRequired()
+                        .HasMaxLength(255)
+                        .HasColumnType("character varying(255)")
+                        .HasColumnName("UserName");
 
                     b.HasKey("Id")
                         .HasName("PK_Users");

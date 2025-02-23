@@ -240,7 +240,7 @@ public partial class StampingRobotContext : DbContext
             entity.HasKey(e => e.Id).HasName("PK_Users");
 
             entity.Property(e => e.Id).HasColumnName("UserID");
-            entity.Property(e => e.CodeOtpemail).HasColumnName("CodeOTPEmail");
+            entity.Property(e => e.CodeOtpEmail).HasColumnName("CodeOTPEmail");
             entity.Property(e => e.Email)
                 .IsRequired()
                 .HasMaxLength(255)
@@ -265,10 +265,10 @@ public partial class StampingRobotContext : DbContext
                 .IsRequired()
                 .HasMaxLength(20)
                 .HasColumnName("Role");
-            entity.Property(e => e.UserName)
-                .IsRequired()
-                .HasMaxLength(255)
-                .HasColumnName("UserName");
+            entity.Property(e => e.GoogleId)
+                .HasColumnName("GoogleId");
+            entity.Property(e => e.RefreshToken)
+                .HasColumnName("RefreshToken");
         });
 
         OnModelCreatingPartial(modelBuilder);
