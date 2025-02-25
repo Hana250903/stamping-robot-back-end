@@ -42,7 +42,7 @@ namespace StampingRobot.Service.Services
             _mailService = mailService;
         }
 
-        public async Task<Pagination<User>> GetAllUserPagination(PaginationParameter paginationParameter, FilterUser filterUser)
+        public async Task<Pagination<UserModel>> GetAllUserPagination(PaginationParameter paginationParameter, FilterUser filterUser)
         {
             var list = await _userRepository.GetAllUserWithFilter(filterUser);
 
@@ -50,10 +50,11 @@ namespace StampingRobot.Service.Services
                 .Take(paginationParameter.PageSize)
                 .ToList();
 
-            return new Pagination<User>(result, list.Count, paginationParameter.PageIndex, paginationParameter.PageSize);
+            var userModel = _mapper.Map<List<UserModel>>(result);
+            return new Pagination<UserModel>(userModel, list.Count, paginationParameter.PageIndex, paginationParameter.PageSize);
         }
 
-        public async Task<User> GetUserById(int id)
+        public async Task<UserModel> GetUserById(int id)
         {
             var user = await _userRepository.GetByIdAsync(id);
 
@@ -62,9 +63,35 @@ namespace StampingRobot.Service.Services
                 return null;
             }
 
-            var userModel = _mapper.Map<User>(user);
+            var userModel = _mapper.Map<UserModel>(user);
 
             return userModel;
+        }
+
+        public async Task<UserModel> UpdateUser (UserModel userModel)
+        {
+            var user = await _userRepository.GetByIdAsync(userModel.Id);
+            if (user == null)
+            {
+                throw new Exception("User is not exist");
+            }
+            user.FullName = userModel.FullName;
+            user.Phone = userModel.Phone;
+            await _userRepository.UpdateAsync(user);
+            await _unitOfWork.SaveChanges();
+            return userModel;
+        }
+
+        public async Task<bool> DeleteUser(int id)
+        {
+            var user = await _userRepository.GetByIdAsync(id);
+            if (user == null)
+            {
+                throw new Exception("User is not exist");
+            }
+            await _userRepository.SoftDeleteAsync(user);
+            await _unitOfWork.SaveChanges();
+            return true;
         }
 
         #region Authen

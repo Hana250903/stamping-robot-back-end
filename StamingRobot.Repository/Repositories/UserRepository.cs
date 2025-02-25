@@ -21,7 +21,8 @@ namespace StamingRobot.Repository.Repositories
 
         public async Task<List<User>> GetAllUserWithFilter(FilterUser filter)
         {
-            var list = _dbContext.Users.Where(c => (filter.Role == null || c.Role.Equals(filter.Role)))
+            var list = _dbContext.Users.Where(c => (filter.Role == null || c.Role.Equals(filter.Role)) &&
+                    (filter.IsDelete == null || c.IsDeleted == filter.IsDelete))
                 .Select(c => new
                 {
                     c.Id,

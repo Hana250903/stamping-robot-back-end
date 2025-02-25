@@ -11,9 +11,13 @@ namespace StampingRobot.Service.Services.Interface
 {
     public interface IUserService
     {
-        Task<Pagination<User>> GetAllUserPagination(PaginationParameter paginationParameter, FilterUser filterUser);
+        Task<Pagination<UserModel>> GetAllUserPagination(PaginationParameter paginationParameter, FilterUser filterUser);
 
-        Task<User> GetUserById(int id);
+        Task<UserModel> GetUserById(int id);
+
+        Task<UserModel> UpdateUser (UserModel userModel);
+
+        Task<bool> DeleteUser (int id);
 
         #region Authen
         public Task<AuthenModel> LoginByEmailAndPassword(string email, string password);

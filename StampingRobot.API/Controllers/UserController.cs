@@ -7,6 +7,7 @@ using StampingRobot.API.ViewModels.ResponseModels;
 using StampingRobot.Service.BussinessModels;
 using StampingRobot.Service.Services;
 using StampingRobot.Service.Services.Interface;
+using StampingRobot.Service.Ultils;
 
 namespace StampingRobot.API.Controllers
 {
@@ -15,10 +16,12 @@ namespace StampingRobot.API.Controllers
     public class UserController : ControllerBase
     {
         private readonly IUserService _userService;
+        private readonly ICurentUserService _curentUserService;
 
-        public UserController(IUserService userService)
+        public UserController(IUserService userService, ICurentUserService curentUserService)
         {
             _userService = userService;
+            _curentUserService = curentUserService;
         }
 
         [HttpGet]
@@ -65,11 +68,11 @@ namespace StampingRobot.API.Controllers
         }
 
         [HttpGet("{Id}")]
-        public async Task<IActionResult> GetUserById(int id)
+        public async Task<IActionResult> GetUserById(int Id)
         {
             try
             {
-                var user = await _userService.GetUserById(id);
+                var user = await _userService.GetUserById(Id);
 
                 if (user == null)
                 {
@@ -92,15 +95,78 @@ namespace StampingRobot.API.Controllers
         }
 
         [HttpPut]
-        public Task<IActionResult> UpdateUser([FromBody]UserUpdateRequestModel updateUserModel)
+        public async Task<IActionResult> UpdateUser([FromBody]UserUpdateRequestModel updateUserModel)
         {
-            throw new NotImplementedException();
+            try
+            {
+                var userId = _curentUserService.GetUserId();
+
+                var user = new UserModel
+                {
+                    Id = userId,
+                    FullName = updateUserModel.FullName,
+                    Phone = updateUserModel.Phone
+                };
+
+                var result = await _userService.UpdateUser(user);
+                if(result != null)
+                {
+                    return Ok(new ResponseModel
+                    {
+                        HttpCode = StatusCodes.Status200OK,
+                        Message = "Update user success"
+                    });
+                }
+                else
+                {
+                    return NotFound(new ResponseModel
+                    {
+                        HttpCode = StatusCodes.Status404NotFound,
+                        Message = "User not exist"
+                    });
+                }
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new ResponseModel
+                {
+                    HttpCode = StatusCodes.Status400BadRequest,
+                    Message = ex.Message.ToString()
+                });
+            }
         }
 
         [HttpDelete("{Id}")]
-        public Task<IActionResult> DeleteUser(int id)
+        public async Task<IActionResult> DeleteUser(int Id)
         {
-            throw new NotImplementedException();
+            try
+            {
+                var result = await _userService.DeleteUser(Id);
+                if (result)
+                {
+                    return Ok(new ResponseModel
+                    {
+                        HttpCode = StatusCodes.Status200OK,
+                        Message = "Delete user success"
+                    });
+                }
+                else
+                {
+                    return NotFound(new ResponseModel
+                    {
+                        HttpCode = StatusCodes.Status404NotFound,
+                        Message = "User not exist"
+                    });
+                }
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new ResponseModel
+                {
+                    HttpCode = StatusCodes.Status400BadRequest,
+                    Message = ex.Message.ToString()
+                });
+            }
         }
     }
 }
