@@ -34,12 +34,12 @@ namespace StamingRobot.Repository.Repositories
 
         public async Task<List<TEntity>> GetAllAsync()
         {
-            return await _dbSet.ToListAsync();
+            return await _dbSet.AsNoTracking().ToListAsync();
         }
 
         public async Task<TEntity?> GetByIdAsync(int id)
         {
-            var result = await _dbSet.FirstOrDefaultAsync(x => x.Id == id);
+            var result = await _dbSet.AsNoTracking().FirstOrDefaultAsync(x => x.Id == id);
             return result;
         }
 
@@ -90,16 +90,21 @@ namespace StamingRobot.Repository.Repositories
             return await _dbContext.Database.BeginTransactionAsync();
         }
 
-        public async Task<TEntity?> GetByConditionAsync(Expression<Func<TEntity, bool>> condition)
+        public async Task<List<TEntity>?> GetByConditionAsync(Expression<Func<TEntity, bool>> condition)
         {
-            var result = await _dbSet.FirstOrDefaultAsync(condition);
+            var result = await _dbSet.AsNoTracking().Where(condition).ToListAsync();
             return result;
         }
 
         public async Task<TEntity?> GetLastInsertedAsync()
         {
-            var result = await _dbSet.OrderByDescending(x => x.Id).FirstOrDefaultAsync();
+            var result = await _dbSet.AsNoTracking().OrderByDescending(x => x.Id).FirstOrDefaultAsync();
             return result;
+        }
+
+        public async Task<TEntity?> FindAsync(Expression<Func<TEntity, bool>> predicate)
+        {
+            return await _dbSet.AsNoTracking().FirstOrDefaultAsync(predicate);
         }
     }
 }

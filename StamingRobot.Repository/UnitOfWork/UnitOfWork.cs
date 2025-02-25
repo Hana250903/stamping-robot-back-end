@@ -1,5 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore.Storage;
 using StamingRobot.Repository.Entities;
+using StamingRobot.Repository.Repositories;
+using StamingRobot.Repository.Repositories.Interface;
 using StamingRobot.Repository.UnitOfWork.Interface;
 using System;
 using System.Collections.Generic;
@@ -11,16 +13,33 @@ namespace StamingRobot.Repository.UnitOfWork
 {
     public class UnitOfWork : IUnitOfWork, IDisposable
     {
-        private readonly StampingRobotContext _StampingRobotContext;
+        private readonly StampingRobotContext _stampingRobotContext;
         private IDbContextTransaction? _transaction = null;
+        public IGenericRepository<Product> ProductRepository { get; }
+        public IGenericRepository<Robot> RobotRepository { get; }
+        public IGenericRepository<Stamp> StampRepository { get; }
+        public IGenericRepository<StampingProcess> StampingProcessRepository { get; }
+        public IGenericRepository<StampingSession> StampingSessionRepository { get; }
+        public IGenericRepository<StampingTask> StampingTaskRepository { get; }
+        public IGenericRepository<TaskAssignment> TaskAssignmentRepository { get; }
+        public IGenericRepository<User> UserRepository { get; } 
 
-        public UnitOfWork(StampingRobotContext cursusContext)
+        public UnitOfWork(StampingRobotContext context)
         {
-            _StampingRobotContext = cursusContext;
+            _stampingRobotContext = context;
+            ProductRepository = new GenericRepository<Product>(context);
+            RobotRepository = new GenericRepository<Robot>(context);
+            StampRepository = new GenericRepository<Stamp>(context);
+            StampingProcessRepository = new GenericRepository<StampingProcess>(context);
+            StampingSessionRepository = new GenericRepository<StampingSession>(context);
+            StampingTaskRepository = new GenericRepository<StampingTask>(context);
+            TaskAssignmentRepository = new GenericRepository<TaskAssignment>(context);
+            UserRepository = new GenericRepository<User>(context);
         }
+
         public async Task BeginTransactionAsync()
         {
-            _transaction = await _StampingRobotContext.Database.BeginTransactionAsync();
+            _transaction = await _stampingRobotContext.Database.BeginTransactionAsync();
         }
 
         public async Task CommitTransactionAsync()
@@ -34,7 +53,7 @@ namespace StamingRobot.Repository.UnitOfWork
 
         public void Dispose()
         {
-            _StampingRobotContext.Dispose(); // Giải phóng tài nguyên quản lý
+            _stampingRobotContext.Dispose(); // Giải phóng tài nguyên quản lý
             GC.SuppressFinalize(this); // Garbage Collector không cần thực thi phương thức hủy nữa
         }
 
@@ -49,7 +68,7 @@ namespace StamingRobot.Repository.UnitOfWork
 
         public async Task<int> SaveChanges()
         {
-            return await _StampingRobotContext.SaveChangesAsync();
+            return await _stampingRobotContext.SaveChangesAsync();
         }
     }
 }
