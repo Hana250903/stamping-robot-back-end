@@ -18,9 +18,11 @@ namespace StampingRobot.API.Controllers
         }
 
         [HttpGet]
-        public Task<IActionResult> GetAllProductsPaging([FromQuery] PaginationParameter paginationParameter)
+        public async Task<IActionResult> GetAllProductsPaging([FromQuery] PaginationParameter paginationParameter)
         {
-            throw new NotImplementedException();
+            var result = await _productService.GetProducts();
+
+            return Ok(result);
         }
 
         [HttpGet("{id}")]
