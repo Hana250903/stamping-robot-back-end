@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Google.Apis.Auth;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using StamingRobot.Repository.Commons;
@@ -25,16 +26,14 @@ namespace StampingRobot.Service.Services
 {
     public class UserService : IUserService
     {
-        private readonly IUserRepository _userRepository;
         private readonly IMapper _mapper;
         private readonly IConfiguration _configuration;
         private readonly IUnitOfWork _unitOfWork;
         private readonly IOtpService _otp;
         private readonly IMailService _mailService;
 
-        public UserService(IUserRepository userRepository, IMapper mapper, IConfiguration configuration, IUnitOfWork unitOfWork, IOtpService otp, IMailService mailService)
+        public UserService(IMapper mapper, IConfiguration configuration, IUnitOfWork unitOfWork, IOtpService otp, IMailService mailService)
         {
-            _userRepository = userRepository;
             _mapper = mapper;
             _configuration = configuration;
             _unitOfWork = unitOfWork;
@@ -44,19 +43,21 @@ namespace StampingRobot.Service.Services
 
         public async Task<Pagination<UserModel>> GetAllUserPagination(PaginationParameter paginationParameter, FilterUser filterUser)
         {
-            var list = await _userRepository.GetAllUserWithFilter(filterUser);
+            var list = await _unitOfWork.UserRepository.GetByConditionAsync(c => (c.Role.Equals(filterUser.Role) || filterUser.Role == null) && (c.IsDeleted == filterUser.IsDelete || filterUser.IsDelete == null));
 
             var result = list.Skip((paginationParameter.PageIndex - 1) * paginationParameter.PageSize)
                 .Take(paginationParameter.PageSize)
                 .ToList();
 
+            var itemCount = list.Count();
+
             var userModel = _mapper.Map<List<UserModel>>(result);
-            return new Pagination<UserModel>(userModel, list.Count, paginationParameter.PageIndex, paginationParameter.PageSize);
+            return new Pagination<UserModel>(userModel, itemCount, paginationParameter.PageIndex, paginationParameter.PageSize);
         }
 
         public async Task<UserModel> GetUserById(int id)
         {
-            var user = await _userRepository.GetByIdAsync(id);
+            var user = await _unitOfWork.UserRepository.GetByIdAsync(id);
 
             if (user == null)
             {
@@ -70,28 +71,40 @@ namespace StampingRobot.Service.Services
 
         public async Task<UserModel> UpdateUser (UserModel userModel)
         {
-            var user = await _userRepository.GetByIdAsync(userModel.Id);
+            var user = await _unitOfWork.UserRepository.GetByIdAsync(userModel.Id);
             if (user == null)
             {
                 throw new Exception("User is not exist");
             }
             user.FullName = userModel.FullName;
             user.Phone = userModel.Phone;
-            await _userRepository.UpdateAsync(user);
+            await _unitOfWork.UserRepository.UpdateAsync(user);
             await _unitOfWork.SaveChanges();
             return userModel;
         }
 
         public async Task<bool> DeleteUser(int id)
         {
-            var user = await _userRepository.GetByIdAsync(id);
+            var user = await _unitOfWork.UserRepository.GetByIdAsync(id);
             if (user == null)
             {
                 throw new Exception("User is not exist");
             }
-            await _userRepository.SoftDeleteAsync(user);
+            await _unitOfWork.UserRepository.SoftDeleteAsync(user);
             await _unitOfWork.SaveChanges();
             return true;
+        }
+
+        public async Task<UserModel> GetUserByEmail(string email)
+        {
+            var user = await _unitOfWork.UserRepository.FindAsync(c => c.Email == email);
+
+            if (user == null)
+            {
+                return null;
+            }
+            var userModel = _mapper.Map<UserModel>(user);
+            return userModel;
         }
 
         #region Authen
@@ -99,7 +112,7 @@ namespace StampingRobot.Service.Services
         {
             try
             {
-                var user = await _userRepository.GetByIdAsync(model.Id);
+                var user = await _unitOfWork.UserRepository.GetByIdAsync(model.Id);
 
                 if (user == null)
                 {
@@ -118,7 +131,7 @@ namespace StampingRobot.Service.Services
                     {
                         var passwordHash = PasswordUltils.HashPassword(model.NewPassword);
                         user.Password = passwordHash;
-                        await _userRepository.UpdateAsync(user);
+                        await _unitOfWork.UserRepository.UpdateAsync(user);
                         await _unitOfWork.SaveChanges();
                         return true;
                     }
@@ -134,7 +147,7 @@ namespace StampingRobot.Service.Services
 
         public async Task<bool> ForgotPassword(ForgotPasswordModel model)
         {
-            var user = await _userRepository.GetByIdAsync(model.Id);
+            var user = await _unitOfWork.UserRepository.GetByIdAsync(model.Id);
             if (user == null)
             {
                 return false;
@@ -142,7 +155,7 @@ namespace StampingRobot.Service.Services
 
             var hashPassword = PasswordUltils.HashPassword(model.Password);
             user.Password = hashPassword;
-            await _userRepository.UpdateAsync(user);
+            await _unitOfWork.UserRepository.UpdateAsync(user);
             var result = await _unitOfWork.SaveChanges();
             if (result > 0)
             {
@@ -153,7 +166,8 @@ namespace StampingRobot.Service.Services
 
         public async Task<AuthenModel> LoginByEmailAndPassword(string email, string password)
         {
-            var user = await _userRepository.GetUserByEmail(email);
+            var user = await GetUserByEmail(email);
+
             if (user == null)
             {
                 return new AuthenModel
@@ -176,12 +190,15 @@ namespace StampingRobot.Service.Services
                 var checkPassword = PasswordUltils.VerifyPassword(password, user.Password);
                 if (checkPassword)
                 {
+                    
                     var assetToken = await GenerateAccessToken(user);
                     var refreshToken = GenerateRefreshToken(email);
 
                     user.RefreshToken = refreshToken;
 
-                    await _userRepository.UpdateAsync(user);
+                    var userModel = _mapper.Map<User>(user);
+
+                    await _unitOfWork.UserRepository.UpdateAsync(userModel);
                     await _unitOfWork.SaveChanges();
 
                     return new AuthenModel
@@ -221,7 +238,7 @@ namespace StampingRobot.Service.Services
                 throw new Exception("Invalid credential");
             }
 
-            var user = await _userRepository.GetUserByEmail(payload.Email);
+            var user = await GetUserByEmail(payload.Email);
 
             if (user != null)
             {
@@ -239,7 +256,9 @@ namespace StampingRobot.Service.Services
 
                 user.RefreshToken = refreshToken;
 
-                await _userRepository.UpdateAsync(user);
+                var userModel = _mapper.Map<User>(user);
+
+                await _unitOfWork.UserRepository.UpdateAsync(userModel);
                 await _unitOfWork.SaveChanges();
 
                 return new AuthenModel
@@ -254,7 +273,7 @@ namespace StampingRobot.Service.Services
             {
                 try
                 {
-                    User newUser = new User
+                    UserModel newUser = new UserModel
                     {
                         FullName = payload.Name,
                         Email = payload.Email,
@@ -269,7 +288,9 @@ namespace StampingRobot.Service.Services
 
                     newUser.RefreshToken = refeshToken;
 
-                    await _userRepository.AddAsync(newUser);
+                    var newUserModel = _mapper.Map<User>(newUser);
+
+                    await _unitOfWork.UserRepository.AddAsync(newUserModel);
 
                     var result = await _unitOfWork.SaveChanges();
 
@@ -316,7 +337,7 @@ namespace StampingRobot.Service.Services
                 var email = principal.Claims.FirstOrDefault(x => x.Type == "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress")?.Value;
                 if (email != null)
                 {
-                    var existUser = await _userRepository.GetUserByEmail(email);
+                    var existUser = await GetUserByEmail(email);
                     if (existUser != null)
                     {
                         if (existUser.RefreshToken != refreshToken)
@@ -324,7 +345,8 @@ namespace StampingRobot.Service.Services
                             throw new Exception("Refresh Token can not use");
                         }
                         existUser.RefreshToken = null;
-                        await _userRepository.UpdateAsync(existUser);
+                        var userModel = _mapper.Map<User>(existUser);
+                        await _unitOfWork.UserRepository.UpdateAsync(userModel);
                         await _unitOfWork.SaveChanges();
                         return true;
                     }
@@ -360,7 +382,7 @@ namespace StampingRobot.Service.Services
                 var email = principal.Claims.FirstOrDefault(x => x.Type == "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress")?.Value;
                 if (email != null)
                 {
-                    var existUser = await _userRepository.GetUserByEmail(email);
+                    var existUser = await GetUserByEmail(email);
 
                     if (existUser != null)
                     {
@@ -410,7 +432,7 @@ namespace StampingRobot.Service.Services
                     Email = model.Email,
                 };
 
-                var checkEmail = await _userRepository.GetUserByEmail(newUser.Email);
+                var checkEmail = await GetUserByEmail(model.Email);
 
                 if (checkEmail != null)
                 {
@@ -421,21 +443,26 @@ namespace StampingRobot.Service.Services
 
                 switch (model.Role)
                 {
+                    case 0:
+                        newUser.Role = Role.Admin;
+                        break;
                     case 1:
                         newUser.Role = Role.Employee;
-                        break;
-                    case 2:
-                        newUser.Role = Role.Admin;
                         break;
                     default:
                         throw new Exception($"Invalid role: {model.Role}");
                 }
 
-                await _userRepository.AddAsync(newUser);
+                await _unitOfWork.UserRepository.AddAsync(newUser);
 
                 var result = await _unitOfWork.SaveChanges();
-                await _unitOfWork.CommitTransactionAsync();
-                return true;
+
+                if (result > 0)
+                {
+                    await _unitOfWork.CommitTransactionAsync();
+                    return true;
+                }
+                return false;
             }
             catch (Exception e)
             {
@@ -446,7 +473,7 @@ namespace StampingRobot.Service.Services
 
         public async Task<bool> SendOTPEmail(string email, int userId)
         {
-            var user = await _userRepository.GetByIdAsync(userId);
+            var user = await _unitOfWork.UserRepository.GetByIdAsync(userId);
 
             if (user == null)
             {
@@ -472,7 +499,7 @@ namespace StampingRobot.Service.Services
 
         #endregion
 
-        private async Task<string> GenerateAccessToken(User user)
+        private async Task<string> GenerateAccessToken(UserModel user)
         {
             var authClaims = new List<Claim>();
 

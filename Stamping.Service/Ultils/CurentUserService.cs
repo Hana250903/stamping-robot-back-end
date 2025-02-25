@@ -1,6 +1,8 @@
 ﻿using Microsoft.AspNetCore.Http;
 using StamingRobot.Repository.Entities;
 using StamingRobot.Repository.Repositories.Interface;
+using StamingRobot.Repository.UnitOfWork;
+using StamingRobot.Repository.UnitOfWork.Interface;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -21,17 +23,17 @@ namespace StampingRobot.Service.Ultils
     public class CurentUserService : ICurentUserService
     {
         private readonly IHttpContextAccessor _httpContextAccessor;
-        private readonly IUserRepository _userRepository;
+        private readonly IUnitOfWork _unitOfWork;
 
-        public CurentUserService(IHttpContextAccessor httpContextAccessor, IUserRepository userRepository)
+        public CurentUserService(IHttpContextAccessor httpContextAccessor, IUnitOfWork unitOfWork)
         {
             _httpContextAccessor = httpContextAccessor;
-            _userRepository = userRepository;
+            _unitOfWork = unitOfWork;
         }
         public async Task<User?> GetCurentAccount()
         {
             int userId = GetUserId();
-            var account = await _userRepository.GetByIdAsync(userId);
+            var account = await _unitOfWork.UserRepository.GetByIdAsync(userId);
 
             return account;
         }

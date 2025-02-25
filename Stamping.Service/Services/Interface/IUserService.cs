@@ -15,6 +15,8 @@ namespace StampingRobot.Service.Services.Interface
 
         Task<UserModel> GetUserById(int id);
 
+        Task<UserModel> GetUserByEmail(string email);
+
         Task<UserModel> UpdateUser (UserModel userModel);
 
         Task<bool> DeleteUser (int id);
