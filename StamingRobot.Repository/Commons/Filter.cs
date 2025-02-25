@@ -9,7 +9,7 @@ namespace StamingRobot.Repository.Commons
 {
     public class FilterRobot
     {
-        public string? Name { get; set; }
+        public string? Model { get; set; }
 
     }
 
