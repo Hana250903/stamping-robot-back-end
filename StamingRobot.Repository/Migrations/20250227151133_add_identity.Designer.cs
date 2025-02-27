@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using StamingRobot.Repository.Entities;
@@ -11,9 +12,11 @@ using StamingRobot.Repository.Entities;
 namespace StamingRobot.Repository.Migrations
 {
     [DbContext(typeof(StampingRobotContext))]
-    partial class StampingRobotContextModelSnapshot : ModelSnapshot
+    [Migration("20250227151133_add_identity")]
+    partial class add_identity
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

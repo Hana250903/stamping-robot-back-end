@@ -18,9 +18,9 @@ namespace StamingRobot.Repository.UnitOfWork
         public IGenericRepository<Product> ProductRepository { get; }
         public IGenericRepository<Robot> RobotRepository { get; }
         public IGenericRepository<Stamp> StampRepository { get; }
-        public IGenericRepository<StampingProcess> StampingProcessRepository { get; }
+        public IGenericRepository<StampingJob> StampingJobRepository { get; }
         public IGenericRepository<StampingSession> StampingSessionRepository { get; }
-        public IGenericRepository<StampingTask> StampingTaskRepository { get; }
+        public IGenericRepository<StampingJobParameters> StampingJobParametersRepository { get; }
         public IGenericRepository<TaskAssignment> TaskAssignmentRepository { get; }
         public IGenericRepository<User> UserRepository { get; } 
 
@@ -30,9 +30,9 @@ namespace StamingRobot.Repository.UnitOfWork
             ProductRepository = new GenericRepository<Product>(context);
             RobotRepository = new GenericRepository<Robot>(context);
             StampRepository = new GenericRepository<Stamp>(context);
-            StampingProcessRepository = new GenericRepository<StampingProcess>(context);
+            StampingJobRepository = new GenericRepository<StampingJob>(context);
             StampingSessionRepository = new GenericRepository<StampingSession>(context);
-            StampingTaskRepository = new GenericRepository<StampingTask>(context);
+            StampingJobParametersRepository = new GenericRepository<StampingJobParameters>(context);
             TaskAssignmentRepository = new GenericRepository<TaskAssignment>(context);
             UserRepository = new GenericRepository<User>(context);
         }

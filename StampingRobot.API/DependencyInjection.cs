@@ -19,11 +19,11 @@ namespace StampingRobot.API
 
             services.AddScoped<IStampService, StampService>();
 
-            services.AddScoped<IStampingProcessService, StampingProcessService>();
+            services.AddScoped<IStampingJobService, StampingJobService>();
 
             services.AddScoped<IStampingSessionService, StampingSessionService>();
 
-            services.AddScoped<IStampingTaskService, StampingTaskService>();
+            services.AddScoped<IStampingJobParametersService, StampingJobParametersService>();
 
             services.AddScoped<ITaskAssignmentService, TaskAssignmentService>();
 

@@ -6,15 +6,15 @@ using StampingRobot.Service.Services.Interface;
 
 namespace StampingRobot.API.Controllers
 {
-    [Route("api/stamping-process")]
+    [Route("api/stamping-jobs")]
     [ApiController]
-    public class StampingProcessController : ControllerBase
+    public class StampingJobController : ControllerBase
     {
-        private readonly IStampingProcessService _stampingProcessService;
+        private readonly IStampingJobService _stampingJobService;
 
-        public StampingProcessController(IStampingProcessService stampingProcessService)
+        public StampingJobController(IStampingJobService stampingJobService)
         {
-            _stampingProcessService = stampingProcessService;
+            _stampingJobService = stampingJobService;
         }
 
         [HttpGet]

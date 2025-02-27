@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace StampingRobot.Service.Services.Interface
 {
-    public interface IStampingProcessService
+    public interface IStampingJobParametersService
     {
     }
 }

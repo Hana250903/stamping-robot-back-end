@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace StampingRobot.Service.Services
 {
-    public class StampingTaskService : IStampingTaskService
+    public class StampingJobParametersService : IStampingJobParametersService
     {
     }
 }

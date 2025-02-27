@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace StampingRobot.Service.BussinessModels
 {
-    public class StampingTaskModel : BaseEntity
+    public class StampingJobParametersModel : BaseEntity
     {
         public string Status { get; set; }
 

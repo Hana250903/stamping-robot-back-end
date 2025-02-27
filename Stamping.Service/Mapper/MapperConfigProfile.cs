@@ -17,8 +17,8 @@ namespace StampingRobot.Service.Mapper
             CreateMap<RobotModel, Robot>().ReverseMap();
             CreateMap<StampModel, Stamp>().ReverseMap();
             CreateMap<StampingSessionModel, StampingSession>().ReverseMap();
-            CreateMap<StampingTaskModel, StampingTask>().ReverseMap();
-            CreateMap<StampingProcessModel, StampingProcess>().ReverseMap();
+            CreateMap<StampingJobParametersModel, StampingJobParameters>().ReverseMap();
+            CreateMap<StampingJobModel, StampingJob>().ReverseMap();
             CreateMap<UserModel, User>().ReverseMap();
             CreateMap<TaskAssignmentModel, TaskAssignment>().ReverseMap();
         }

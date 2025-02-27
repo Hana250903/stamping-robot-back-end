@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace StampingRobot.Service.BussinessModels
 {
-    public class StampingProcessModel : BaseEntity
+    public class StampingJobModel : BaseEntity
     {
         public string StepNumber { get; set; }
 
