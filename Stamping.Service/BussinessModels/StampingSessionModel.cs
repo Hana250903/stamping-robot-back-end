@@ -11,16 +11,12 @@ namespace StampingRobot.Service.BussinessModels
     {
         public int Quantity { get; set; }
 
-        public string Status { get; set; }
+        public string Status { get; set; } = null!;
 
-        public DateTime CreatedAt { get; set; }
+        public int? UserId { get; set; }
 
-        public int UserId { get; set; }
+        public int? RobotId { get; set; }
 
-        public int RobotId { get; set; }
-
-        public int ProductId { get; set; }
-
-        public int? TaskAssignmentId { get; set; }
+        public int? ProductId { get; set; }
     }
 }

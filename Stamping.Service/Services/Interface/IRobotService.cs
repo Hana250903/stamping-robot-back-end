@@ -12,5 +12,13 @@ namespace StampingRobot.Service.Services.Interface
     public interface IRobotService
     {
         Task<Pagination<RobotModel>> GetAllRobotPagination (PaginationParameter paginationParameter, FilterRobot filter);
+
+        Task<RobotModel> GetRobotByIdAsync(int id);
+
+        Task<bool> CreateRobotAsync(RobotModel robotModel);
+
+        Task<bool> UpdateRobotAsync(RobotModel robotModel);
+
+        Task<bool> DeleteRobotAsync(int id);
     }
 }

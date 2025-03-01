@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using StamingRobot.Repository.Commons;
+using StampingRobot.API.ViewModels.RequestModels;
 using StampingRobot.Service.Services;
 using StampingRobot.Service.Services.Interface;
 
@@ -30,7 +31,7 @@ namespace StampingRobot.API.Controllers
         }
 
         [HttpPost]
-        public Task<IActionResult> CreateStampingProcess()
+        public Task<IActionResult> CreateStampingProcess([FromBody] CreateStampingJobRequestModel createStampingJobRequestModel)
         {
             throw new NotImplementedException();
         }

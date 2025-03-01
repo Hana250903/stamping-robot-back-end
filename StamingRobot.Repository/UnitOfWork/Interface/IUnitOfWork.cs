@@ -15,7 +15,6 @@ namespace StamingRobot.Repository.UnitOfWork.Interface
         IGenericRepository<Stamp> StampRepository { get; }
         IGenericRepository<StampingJob> StampingJobRepository { get; }
         IGenericRepository<StampingSession> StampingSessionRepository { get; }
-        IGenericRepository<StampingJobParameters> StampingJobParametersRepository { get; }
         IGenericRepository<TaskAssignment> TaskAssignmentRepository { get; }
         IGenericRepository<User> UserRepository { get; }
 

@@ -9,10 +9,14 @@ namespace StampingRobot.Service.BussinessModels
 {
     public class StampingJobModel : BaseEntity
     {
-        public string StepNumber { get; set; }
+        public int StepNumber { get; set; }
 
-        public string Description { get; set; }
+        public string Description { get; set; } = null!;
 
         public int SessionId { get; set; }
+
+        public string Status { get; set; } = null!;
+
+        public Dictionary<string, object> Parameters { get; set; } = null!;
     }
 }

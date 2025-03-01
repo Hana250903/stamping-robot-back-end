@@ -9,10 +9,12 @@ namespace StampingRobot.Service.BussinessModels
 {
     public class TaskAssignmentModel : BaseEntity
     {
-        public DateTime TimeStamp { get; set; }
+        public int JobId { get; set; }
 
-        public string Action { get; set; }
+        public string Status { get; set; } = null!;
 
-        public string Details { get; set; }
+        public string ImageCaptured { get; set; } = null!;
+
+        public string Details { get; set; } = null!;
     }
 }

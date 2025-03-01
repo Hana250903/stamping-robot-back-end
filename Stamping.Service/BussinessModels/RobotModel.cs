@@ -9,11 +9,11 @@ namespace StampingRobot.Service.BussinessModels
 {
     public class RobotModel : BaseEntity
     {
-        public string Model { get; set; }
+        public string Name { get; set; } = null!;
 
-        public string Status { get; set; }
+        public string Model { get; set; } = null!;
 
-        public string Position { get; set; }
+        public string Status { get; set; } = null!;
 
         public int? UserId { get; set; }
     }

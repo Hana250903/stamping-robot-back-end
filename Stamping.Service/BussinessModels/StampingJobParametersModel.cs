@@ -7,16 +7,20 @@ using System.Threading.Tasks;
 
 namespace StampingRobot.Service.BussinessModels
 {
-    public class StampingJobParametersModel : BaseEntity
+    public class StampingJobParametersModel
     {
-        public string Status { get; set; }
+        public int JobId { get; set; }
 
-        public string ImageCaptured { get; set; }
+        public float Base { get; set; }
 
-        public int RobotId { get; set; }
+        public float Upperarm { get; set; }
 
-        public int ProcessId { get; set; }
+        public float Forearm { get; set; }
 
-        public int? TaskAssignmentId { get; set; }
+        public float Wrist { get; set; }
+
+        public float RotationWrist { get; set; }
+
+        public float Gripper { get; set; }
     }
 }

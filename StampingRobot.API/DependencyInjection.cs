@@ -23,8 +23,6 @@ namespace StampingRobot.API
 
             services.AddScoped<IStampingSessionService, StampingSessionService>();
 
-            services.AddScoped<IStampingJobParametersService, StampingJobParametersService>();
-
             services.AddScoped<ITaskAssignmentService, TaskAssignmentService>();
 
             services.AddScoped<IUserService, UserService>();

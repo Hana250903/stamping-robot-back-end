@@ -26,8 +26,6 @@ public partial class StampingRobotContext : DbContext
 
     public virtual DbSet<StampingSession> StampingSessions { get; set; }
 
-    public virtual DbSet<StampingJobParameters> StampingJobParameters { get; set; }
-
     public virtual DbSet<TaskAssignment> TaskAssignments { get; set; }
 
     public virtual DbSet<User> Users { get; set; }
@@ -168,12 +166,9 @@ public partial class StampingRobotContext : DbContext
             entity.Property(e => e.UpdatedAt)
                 .HasColumnType("timestamp with time zone")
                 .HasColumnName("UpdatedAt");
-
-
-            entity.HasOne(d => d.StampingJobParameters).WithOne(p => p.StampingJob)
-                .HasForeignKey<StampingJobParameters>(d => d.JobId)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK_StampingJob_StampingJobParameters");
+            entity.Property(e => e.Parameters)
+                .HasColumnType("jsonb")
+                .HasColumnName("Parameters");
 
             entity.HasOne(d => d.Session).WithMany(p => p.StampingJobs)
                 .HasForeignKey(d => d.SessionId)
@@ -219,53 +214,6 @@ public partial class StampingRobotContext : DbContext
             entity.HasOne(d => d.User).WithMany(p => p.StampingSessions)
                 .HasForeignKey(d => d.UserId)
                 .HasConstraintName("FK_StampingSession_User");
-        });
-
-        modelBuilder.Entity<StampingJobParameters>(entity =>
-        {
-            entity.HasKey(e => e.Id).HasName("PK_StampingJobParameter");
-
-            entity.ToTable("StampingJobParameters");
-
-            entity.Property(e => e.Id).HasColumnName("JobParameterID").ValueGeneratedOnAdd();
-            entity.Property(e => e.JobId).HasColumnName("JobId");
-            entity.Property(e => e.Base)
-                .IsRequired()
-                .HasColumnType("real")
-                .HasColumnName("Base");
-            entity.Property(e => e.Upperarm)
-                .IsRequired()
-                .HasColumnType("real")
-                .HasColumnName("Upperarm");
-            entity.Property(e => e.Forearm)
-                .IsRequired()
-                .HasColumnType("real")
-                .HasColumnName("Forearm");
-            entity.Property(e => e.Wrist)
-                .IsRequired()
-                .HasColumnType("real")
-                .HasColumnName("Wrist");
-            entity.Property(e => e.RotationWrist)
-                .IsRequired()
-                .HasColumnType("real")
-                .HasColumnName("RotationWrist");
-            entity.Property(e => e.Gripper)
-                .IsRequired()
-                .HasColumnType("real")
-                .HasColumnName("Gripper");
-            entity.Property(e => e.CreatedAt)
-                .IsRequired()
-                .HasColumnType("timestamp with time zone")
-                .HasColumnName("CreatedAt");
-            entity.Property(e => e.UpdatedAt)
-                .HasColumnType("timestamp with time zone")
-                .HasColumnName("UpdatedAt");
-            entity.Property(e => e.IsDeleted)
-                .IsRequired()
-                .HasColumnName("IsDeleted");
-
-            entity.HasIndex(e => e.JobId)
-                .IsUnique();
         });
 
         modelBuilder.Entity<TaskAssignment>(entity =>

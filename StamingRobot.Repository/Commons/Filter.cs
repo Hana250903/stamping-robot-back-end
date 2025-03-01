@@ -9,7 +9,9 @@ namespace StamingRobot.Repository.Commons
 {
     public class FilterRobot
     {
-        public string? Model { get; set; }
+        public ModelRobot? Model { get; set; }
+
+        public string? Name { get; set; }
 
     }
 
@@ -39,5 +41,10 @@ namespace StamingRobot.Repository.Commons
     public class FilterSession
     {
         public string? Status { get; set; }
+    }
+
+    public class FilterStampingJob
+    {
+        public StampingJobStatus? Status { get; set; }
     }
 }

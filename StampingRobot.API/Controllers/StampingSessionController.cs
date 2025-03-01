@@ -6,7 +6,7 @@ using StampingRobot.Service.Services.Interface;
 
 namespace StampingRobot.API.Controllers
 {
-    [Route("api/stamping-session")]
+    [Route("api/stamping-sessions")]
     [ApiController]
     public class StampingSessionController : ControllerBase
     {

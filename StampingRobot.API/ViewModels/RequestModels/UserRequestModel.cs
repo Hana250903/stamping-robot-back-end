@@ -14,13 +14,6 @@ namespace StampingRobot.API.ViewModels.RequestModels
         public string Phone { get; set; } = null!;
     }
 
-    public class UserPasswordRequestModel
-    {
-        [Required(ErrorMessage = "Password is required")]
-        [Display(Name = "Password")]
-        public string Password { get; set; } = null!;
-    }
-
     public class ChangePasswordRequestModel
     {
         [Required(ErrorMessage = "OldPassword is required")]
