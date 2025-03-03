@@ -10,7 +10,7 @@ namespace StampingRobot.Service.Services.Interface
 {
     public interface IStampingJobService
     {
-        Task<Pagination<StampingJobModel>> GetAllStampingJobPagination(PaginationParameter paginationParameter, FilterStampingJob filter);
+        Task<Pagination<StampingJobModel>> GetStampingJobPagination(PaginationParameter paginationParameter, FilterStampingJob filter);
         Task<StampingJobModel> GetStampingJobByIdAsync(int id);
         Task<bool> CreateStampingJobAsync(StampingJobModel stampingJobModel);
         Task<bool> UpdateStampingJobAsync(StampingJobModel stampingJobModel);

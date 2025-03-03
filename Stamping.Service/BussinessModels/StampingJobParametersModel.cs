@@ -9,8 +9,6 @@ namespace StampingRobot.Service.BussinessModels
 {
     public class StampingJobParametersModel
     {
-        public int JobId { get; set; }
-
         public float Base { get; set; }
 
         public float Upperarm { get; set; }

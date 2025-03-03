@@ -12,6 +12,6 @@ namespace StampingRobot.API.ViewModels.RequestModels
 
         public string Status { get; set; } = null!;
 
-        public Dictionary<string, StampingJobParametersModel> Parameters { get; set; } = null!;
+        public StampingJobParametersModel Parameters { get; set; } = null!;
     }
 }

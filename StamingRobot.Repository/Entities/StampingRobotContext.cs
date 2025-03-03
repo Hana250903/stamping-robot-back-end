@@ -297,4 +297,34 @@ public partial class StampingRobotContext : DbContext
     }
 
     partial void OnModelCreatingPartial(ModelBuilder modelBuilder);
+
+    #region
+    public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
+    {
+        UpdateTimestamps();
+        return await base.SaveChangesAsync(cancellationToken);
+    }
+
+    private void UpdateTimestamps()
+    {
+        var entries = ChangeTracker
+            .Entries()
+            .Where(e => e.Entity is BaseEntity &&
+                        (e.State == EntityState.Added || e.State == EntityState.Modified || e.State == EntityState.Deleted));
+
+        foreach (var entry in entries)
+        {
+            var auditable = (BaseEntity)entry.Entity;
+            if (entry.State == EntityState.Added)
+            {
+                auditable.CreatedAt = DateTime.UtcNow.AddHours(7);
+            }
+
+            if (entry.State == EntityState.Modified || entry.State == EntityState.Deleted)
+            {
+                auditable.UpdatedAt = DateTime.UtcNow.AddHours(7);
+            }
+        }
+    }
+    #endregion
 }

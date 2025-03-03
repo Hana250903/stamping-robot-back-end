@@ -27,15 +27,15 @@ namespace StampingRobot.API.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetAllRobotsPagingAsync([FromQuery] PaginationParameter paginationParameter,[FromQuery] FilterRobot filter)
+        public async Task<IActionResult> GetRobotsPagingAsync([FromQuery] PaginationParameter paginationParameter,[FromQuery] FilterRobot filter)
         {
             try
             {
-                var result = await _robotService.GetAllRobotPagination(paginationParameter, filter);
+                var result = await _robotService.GetRobotPagination(paginationParameter, filter);
 
                 if (result != null)
                 {
-                    var metadate = new
+                    var metadata = new
                     {
                         result.TotalCount,
                         result.PageSize,
@@ -45,7 +45,7 @@ namespace StampingRobot.API.Controllers
                         result.HasPrevious
                     };
 
-                    Response.Headers.Add("X-Pagination", JsonConvert.SerializeObject(metadate));
+                    Response.Headers.Add("X-Pagination", JsonConvert.SerializeObject(metadata));
 
                     return Ok(result);
                 }

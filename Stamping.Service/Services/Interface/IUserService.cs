@@ -11,7 +11,7 @@ namespace StampingRobot.Service.Services.Interface
 {
     public interface IUserService
     {
-        Task<Pagination<UserModel>> GetAllUserPagination(PaginationParameter paginationParameter, FilterUser filterUser);
+        Task<Pagination<UserModel>> GetUserPagination(PaginationParameter paginationParameter, FilterUser filterUser);
 
         Task<UserModel> GetUserById(int id);
 

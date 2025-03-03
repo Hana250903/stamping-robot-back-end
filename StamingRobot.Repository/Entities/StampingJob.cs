@@ -23,8 +23,6 @@ public partial class StampingJob: BaseEntity
 
 public class StampingJobParameters
 {
-    public int JobId { get; set; }
-
     public float Base { get; set; }
 
     public float Upperarm { get; set; }

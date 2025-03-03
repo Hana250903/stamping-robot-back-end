@@ -19,7 +19,7 @@ namespace StampingRobot.API.Controllers
         }
 
         [HttpGet]
-        public Task<IActionResult> GetAllTaskAssignmentPaging([FromQuery] PaginationParameter paginationParameter, [FromQuery] FilterTaskAssignment filterTaskAssignment)
+        public Task<IActionResult> GetTaskAssignmentPaging([FromQuery] PaginationParameter paginationParameter, [FromQuery] FilterTaskAssignment filterTaskAssignment)
         {
             throw new NotImplementedException();
         }

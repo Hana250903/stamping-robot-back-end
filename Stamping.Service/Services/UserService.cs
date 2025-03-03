@@ -41,7 +41,7 @@ namespace StampingRobot.Service.Services
             _mailService = mailService;
         }
 
-        public async Task<Pagination<UserModel>> GetAllUserPagination(PaginationParameter paginationParameter, FilterUser filterUser)
+        public async Task<Pagination<UserModel>> GetUserPagination(PaginationParameter paginationParameter, FilterUser filterUser)
         {
             var list = await _unitOfWork.UserRepository.GetByConditionAsync(c => (c.Role.Equals(filterUser.Role) || filterUser.Role == null) && (c.IsDeleted == filterUser.IsDelete || filterUser.IsDelete == null));
 

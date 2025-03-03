@@ -25,11 +25,11 @@ namespace StampingRobot.API.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetAllUserWithFilter([FromQuery] PaginationParameter paginationParameter, [FromQuery] FilterUser filterUser)
+        public async Task<IActionResult> GetUserWithFilter([FromQuery] PaginationParameter paginationParameter, [FromQuery] FilterUser filterUser)
         {
             try
             {
-                var result = await _userService.GetAllUserPagination(paginationParameter, filterUser);
+                var result = await _userService.GetUserPagination(paginationParameter, filterUser);
 
                 if (result != null)
                 {

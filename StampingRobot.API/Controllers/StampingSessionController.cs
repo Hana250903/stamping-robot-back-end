@@ -18,7 +18,7 @@ namespace StampingRobot.API.Controllers
         }
 
         [HttpGet]
-        public Task<IActionResult> GetAllStampingSessionPaging([FromQuery] PaginationParameter paginationParameter)
+        public Task<IActionResult> GetStampingSessionPaging([FromQuery] PaginationParameter paginationParameter)
         {
             throw new NotImplementedException();
         }

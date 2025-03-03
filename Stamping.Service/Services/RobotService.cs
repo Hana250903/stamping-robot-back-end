@@ -67,7 +67,7 @@ namespace StampingRobot.Service.Services
             return true;
         }
 
-        public async Task<Pagination<RobotModel>> GetAllRobotPagination(PaginationParameter paginationParameter, FilterRobot filter)
+        public async Task<Pagination<RobotModel>> GetRobotPagination(PaginationParameter paginationParameter, FilterRobot filter)
         {
             var list = await _unitOfWork.RobotRepository.GetByConditionAsync(c => (c.Model.Equals(filter.Model.ToString()) || filter.Model == null) &&
                                 (filter.Name == null || c.Name.Contains(filter.Name)));
