@@ -2,6 +2,8 @@
 using Microsoft.AspNetCore.Mvc;
 using StamingRobot.Repository.Commons;
 using StampingRobot.API.ViewModels.RequestModels;
+using StampingRobot.API.ViewModels.ResponseModels;
+using StampingRobot.Service.BussinessModels;
 using StampingRobot.Service.Services;
 using StampingRobot.Service.Services.Interface;
 
@@ -19,33 +21,133 @@ namespace StampingRobot.API.Controllers
         }
 
         [HttpGet]
-        public Task<IActionResult> GetTaskAssignmentPaging([FromQuery] PaginationParameter paginationParameter, [FromQuery] FilterTaskAssignment filterTaskAssignment)
+        public async Task<IActionResult> GetTaskAssignmentPaging([FromQuery] PaginationParameter paginationParameter, [FromQuery] FilterTaskAssignment filterTaskAssignment)
         {
-            throw new NotImplementedException();
+            try
+            {
+                var result = await _taskAssignmentService.GetTaskAssignments(paginationParameter, filterTaskAssignment);
+                if (result == null)
+                {
+                    return NotFound(new ResponseModel
+                    {
+                        HttpCode = StatusCodes.Status404NotFound,
+                        Message = "Task Assignment not found"
+                    });
+                }
+                else
+                {
+                    return Ok(result);
+                }
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new ResponseModel
+                {
+                    HttpCode = StatusCodes.Status400BadRequest,
+                    Message = ex.Message,
+                });
+            }
         }
 
         [HttpGet("{id}")]
-        public Task<IActionResult> GetTaskAssignmentById(int id)
+        public async Task<IActionResult> GetTaskAssignmentById(int id)
         {
-            throw new NotImplementedException();
+            try
+            {
+                var result = await _taskAssignmentService.GetTaskAssignmentById(id);
+                if (result == null)
+                {
+                    return NotFound(new ResponseModel
+                    {
+                        HttpCode = StatusCodes.Status404NotFound,
+                        Message = "Task Assignment not found"
+                    });
+                }
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new ResponseModel
+                {
+                    HttpCode = StatusCodes.Status400BadRequest,
+                    Message = ex.Message,
+                });
+            }
         }
 
         [HttpPost]
-        public Task<IActionResult> CreateTaskAssignment([FromBody] TaskAssignmentRequestModel taskAssignmentRequestModel)
+        public async Task<IActionResult> CreateTaskAssignment([FromBody] CreateTaskAssignmentRequestModel taskAssignmentRequestModel)
         {
-            throw new NotImplementedException();
-        }
+            try
+            {
+                TaskAssignmentModel taskAssignmentModel = new TaskAssignmentModel()
+                {
+                    JobId = taskAssignmentRequestModel.JobId,
+                    Status = taskAssignmentRequestModel.Status,
+                    ImageCaptured = taskAssignmentRequestModel.ImageCaptured,
+                    Details = taskAssignmentRequestModel.Details,
+                };
 
-        [HttpPut("{id}")]
-        public Task<IActionResult> UpdateTaskAssignment(int id, [FromBody] TaskAssignmentRequestModel taskAssignmentRequestModel)
-        {
-            throw new NotImplementedException();
+
+                var result = await _taskAssignmentService.CreateTaskAssignment(taskAssignmentModel);
+                if (result)
+                {
+                    return Ok(new ResponseModel
+                    {
+                        HttpCode = StatusCodes.Status200OK,
+                        Message = "Create successfully"
+                    });
+                }
+                else
+                {
+                    return BadRequest(new ResponseModel
+                    {
+                        HttpCode = StatusCodes.Status400BadRequest,
+                        Message = "Create fail"
+                    });
+                }
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new ResponseModel
+                {
+                    HttpCode = StatusCodes.Status400BadRequest,
+                    Message = ex.Message,
+                });
+            }
         }
 
         [HttpDelete("{id}")]
-        public Task<IActionResult> DeleteTaskAssignment(int id)
+        public async Task<IActionResult> DeleteTaskAssignment(int id)
         {
-            throw new NotImplementedException();
+            try
+            {
+                var result = await _taskAssignmentService.DeleteTaskAssignment(id);
+                if (result)
+                {
+                    return Ok(new ResponseModel
+                    {
+                        HttpCode = StatusCodes.Status400BadRequest,
+                        Message = "Delete successfully"
+                    });
+                }
+                else
+                {
+                    return NotFound(new ResponseModel
+                    {
+                        HttpCode = StatusCodes.Status200OK,
+                        Message = "Task Assignment not found"
+                    });
+                }
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new ResponseModel
+                {
+                    HttpCode = StatusCodes.Status400BadRequest,
+                    Message = ex.Message,
+                });
+            }
         }
     }
 }

@@ -1,4 +1,5 @@
-﻿using StampingRobot.Service.BussinessModels;
+﻿using StamingRobot.Repository.Entities;
+using StampingRobot.Service.BussinessModels;
 
 namespace StampingRobot.API.ViewModels.RequestModels
 {
@@ -10,8 +11,15 @@ namespace StampingRobot.API.ViewModels.RequestModels
 
         public int SessionId { get; set; }
 
+        public StampingJobParameters Parameters { get; set; } = null!;
+    }
+
+    public class UpdateStampingJobRequestModel
+    {
+        public string Description {  set; get; } = null!;
+
         public string Status { get; set; } = null!;
 
-        public StampingJobParametersModel Parameters { get; set; } = null!;
+        public StampingJobParameters Parameters { get; set; } = null!;
     }
 }

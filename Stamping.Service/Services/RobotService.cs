@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using StamingRobot.Repository.Commons;
 using StamingRobot.Repository.Entities;
+using StamingRobot.Repository.Enum;
 using StamingRobot.Repository.Repositories;
 using StamingRobot.Repository.Repositories.Interface;
 using StamingRobot.Repository.UnitOfWork;
@@ -32,7 +33,7 @@ namespace StampingRobot.Service.Services
             try
             {
                 var robot = _mapper.Map<Robot>(robotModel);
-                robot.CreatedAt = DateTime.UtcNow.AddHours(7);
+                robot.Status = RobotStatus.Idle.ToString();
 
                 await _unitOfWork.RobotRepository.AddAsync(robot);
 
@@ -54,45 +55,67 @@ namespace StampingRobot.Service.Services
 
         public async Task<bool> DeleteRobotAsync(int id)
         {
-            var robot = await _unitOfWork.RobotRepository.GetByIdAsync(id);
-
-            if (robot == null)
+            try
             {
-                throw new Exception("Robot not exist");
+                var robot = await _unitOfWork.RobotRepository.GetByIdAsync(id);
+
+                if (robot == null)
+                {
+                    throw new Exception("Robot not exist");
+                }
+
+                await _unitOfWork.RobotRepository.SoftDeleteAsync(robot);
+                await _unitOfWork.SaveChanges();
+
+                return true;
             }
-
-            await _unitOfWork.RobotRepository.SoftDeleteAsync(robot);
-            await _unitOfWork.SaveChanges();
-
-            return true;
+            catch (Exception ex)
+            {
+                throw ex;
+            }
         }
 
         public async Task<Pagination<RobotModel>> GetRobotPagination(PaginationParameter paginationParameter, FilterRobot filter)
         {
-            var list = await _unitOfWork.RobotRepository.GetByConditionAsync(c => (c.Model.Equals(filter.Model.ToString()) || filter.Model == null) &&
-                                (filter.Name == null || c.Name.Contains(filter.Name)));
+            try
+            {
+                var list = await _unitOfWork.RobotRepository.GetByConditionAsync(c => (c.Model.Equals(filter.Model.ToString()) || filter.Model == null) &&
+                                (filter.Name == null || c.Name.Contains(filter.Name)) && (c.Status.Equals(filter.Status.ToString()) || filter.Status == null)
+                                && (c.IsDeleted.Equals(filter.IsDelete) || filter.IsDelete == null));
 
-            var result = list.Skip((paginationParameter.PageIndex - 1) * paginationParameter.PageSize)
-                .Take(paginationParameter.PageSize)
-                .ToList();
+                var result = list.Skip((paginationParameter.PageIndex - 1) * paginationParameter.PageSize)
+                    .Take(paginationParameter.PageSize)
+                    .ToList();
 
-            var resultModel = _mapper.Map<List<RobotModel>>(result);
+                var resultModel = _mapper.Map<List<RobotModel>>(result);
 
-            return new Pagination<RobotModel>(resultModel, list.Count(), paginationParameter.PageIndex, paginationParameter.PageSize);
+                return new Pagination<RobotModel>(resultModel, list.Count(), paginationParameter.PageIndex, paginationParameter.PageSize);
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
         }
 
         public async Task<RobotModel> GetRobotByIdAsync(int id)
         {
-            var robot = await _unitOfWork.RobotRepository.GetByIdAsync(id);
-
-            if (robot == null)
+            try
             {
-                return null;
+                var robot = await _unitOfWork.RobotRepository.GetByIdAsync(id);
+
+                if (robot == null)
+                {
+                    return null;
+                }
+
+                var result = _mapper.Map<RobotModel>(robot);
+
+                return result;
             }
-
-            var result = _mapper.Map<RobotModel>(robot);
-
-            return result;
+            catch (Exception ex)
+            {
+                throw ex;
+            }
         }
 
         public async Task<bool> UpdateRobotAsync(RobotModel robotModel)
@@ -101,7 +124,6 @@ namespace StampingRobot.Service.Services
             try
             {
                 var robot = _mapper.Map<Robot>(robotModel);
-                robot.UpdatedAt = DateTime.UtcNow.AddHours(7);
 
                 await _unitOfWork.RobotRepository.UpdateAsync(robot);
                 var result = await _unitOfWork.SaveChanges();

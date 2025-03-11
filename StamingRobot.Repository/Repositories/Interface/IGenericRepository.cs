@@ -11,7 +11,6 @@ namespace StamingRobot.Repository.Repositories.Interface
 {
     public interface IGenericRepository<TEntity> where TEntity : BaseEntity
     {
-        Task<List<TEntity>> GetAllAsync();
         Task<TEntity?> GetByIdAsync(int id);
         Task AddAsync(TEntity entity);
         Task UpdateAsync(TEntity entity);

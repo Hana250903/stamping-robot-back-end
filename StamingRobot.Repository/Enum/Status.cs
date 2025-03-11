@@ -42,8 +42,11 @@ namespace StamingRobot.Repository.Enum
         [EnumMember(Value = "Finished")]
         Finished, // Đã hoàn thành
 
-        [EnumMember(Value = "Aborted")]
-        Aborted // Hủy giữa chừng
+        [EnumMember(Value = "Failed")]
+        Failed, // Hủy giữa chừng
+
+        [EnumMember(Value = "Canceled")]
+        Canceled // Hủy bỏs
     }
 
     [JsonConverter(typeof(JsonStringEnumConverter))]

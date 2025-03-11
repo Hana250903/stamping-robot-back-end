@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Text.Json;
 using Microsoft.EntityFrameworkCore;
 
 namespace StamingRobot.Repository.Entities;
@@ -168,6 +169,9 @@ public partial class StampingRobotContext : DbContext
                 .HasColumnName("UpdatedAt");
             entity.Property(e => e.Parameters)
                 .HasColumnType("jsonb")
+                .HasConversion(
+                v => JsonSerializer.Serialize(v, new JsonSerializerOptions()), // Convert C# object -> JSON
+                v => JsonSerializer.Deserialize<StampingJobParameters>(v, new JsonSerializerOptions())!) // Convert JSON -> C# object
                 .HasColumnName("Parameters");
 
             entity.HasOne(d => d.Session).WithMany(p => p.StampingJobs)

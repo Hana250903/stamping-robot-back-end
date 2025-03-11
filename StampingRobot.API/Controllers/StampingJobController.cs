@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using StamingRobot.Repository.Commons;
@@ -22,6 +23,7 @@ namespace StampingRobot.API.Controllers
         }
 
         [HttpGet]
+        [Authorize]
         public async Task<IActionResult> GetStampingJobPaging([FromQuery] PaginationParameter paginationParameter, [FromQuery] FilterStampingJob filterStampingJob)
         {
             try
@@ -64,6 +66,7 @@ namespace StampingRobot.API.Controllers
         }
 
         [HttpGet("{Id}")]
+        [Authorize]
         public async Task<IActionResult> GetStampingJobById(int Id)
         {
             try
@@ -90,6 +93,7 @@ namespace StampingRobot.API.Controllers
         }
 
         [HttpPost]
+        [Authorize]
         public async Task<IActionResult> CreateStampingJob([FromBody] CreateStampingJobRequestModel createStampingJobRequestModel)
         {
             try
@@ -99,7 +103,6 @@ namespace StampingRobot.API.Controllers
                     StepNumber = createStampingJobRequestModel.StepNumber,
                     Description = createStampingJobRequestModel.Description,
                     SessionId = createStampingJobRequestModel.SessionId,
-                    Status = createStampingJobRequestModel.Status,
                     Parameters = createStampingJobRequestModel.Parameters
                 };
 
@@ -133,15 +136,80 @@ namespace StampingRobot.API.Controllers
         }
 
         [HttpPut("{id}")]
-        public Task<IActionResult> UpdateStampingJob(int id)
+        [Authorize]
+        public async Task<IActionResult> UpdateStampingJob(int id, [FromBody] UpdateStampingJobRequestModel updateStampingJobRequestModel)
         {
-            throw new NotImplementedException();
+            try
+            {
+                StampingJobModel stampingJobModel = new StampingJobModel
+                {
+                    Id = id,
+                    Description = updateStampingJobRequestModel.Description,
+                    Status = updateStampingJobRequestModel.Status,
+                    Parameters = updateStampingJobRequestModel.Parameters
+                };
+
+                var result = await _stampingJobService.UpdateStampingJobAsync(stampingJobModel);
+
+                if (result)
+                {
+                    return Ok(new ResponseModel
+                    {
+                        HttpCode = StatusCodes.Status200OK,
+                        Message = "Update successfull"
+                    });
+                }
+                else
+                {
+                    return NotFound(new ResponseModel
+                    {
+                        HttpCode = StatusCodes.Status404NotFound,
+                        Message = "Stamping Job not exist"
+                    });
+                }
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new ResponseModel
+                {
+                    HttpCode = StatusCodes.Status400BadRequest,
+                    Message = ex.Message
+                });
+            }
         }
 
         [HttpDelete("{id}")]
-        public Task<IActionResult> DeleteStampingJob(int id)
+        [Authorize]
+        public async Task<IActionResult> DeleteStampingJob(int id)
         {
-            throw new NotImplementedException();
+            try
+            {
+                var result = await _stampingJobService.DeleteStampingJobAsync(id);
+                if (result)
+                {
+                    return Ok(new ResponseModel
+                    {
+                        HttpCode = StatusCodes.Status200OK,
+                        Message = "Delete successfully"
+                    });
+                }
+                else
+                {
+                    return NotFound(new ResponseModel
+                    {
+                        HttpCode= StatusCodes.Status404NotFound,
+                        Message = "Stamping Job not found"
+                    });
+                }
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new ResponseModel
+                {
+                    HttpCode = StatusCodes.Status400BadRequest,
+                    Message = ex.Message
+                });
+            }
         }
     }
 }

@@ -32,11 +32,6 @@ namespace StamingRobot.Repository.Repositories
             await _dbSet.AddRangeAsync(entities);
         }
 
-        public async Task<List<TEntity>> GetAllAsync()
-        {
-            return await _dbSet.AsNoTracking().ToListAsync();
-        }
-
         public async Task<TEntity?> GetByIdAsync(int id)
         {
             var result = await _dbSet.AsNoTracking().FirstOrDefaultAsync(x => x.Id == id);

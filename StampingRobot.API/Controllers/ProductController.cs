@@ -1,6 +1,10 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using StamingRobot.Repository.Commons;
+using StampingRobot.API.ViewModels.RequestModels;
+using StampingRobot.API.ViewModels.ResponseModels;
+using StampingRobot.Service.BussinessModels;
 using StampingRobot.Service.Services;
 using StampingRobot.Service.Services.Interface;
 
@@ -18,35 +22,178 @@ namespace StampingRobot.API.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetProductsPaging([FromQuery] PaginationParameter paginationParameter)
+        [Authorize]
+        public async Task<IActionResult> GetProductsPaging([FromQuery] PaginationParameter paginationParameter, [FromQuery] FilterProduct filterProduct)
         {
-            var result = await _productService.GetProducts();
-
-            return Ok(result);
+            try
+            {
+                var result = await _productService.GetProducts(paginationParameter, filterProduct);
+                if(result == null)
+                {
+                    return NotFound(new ResponseModel
+                    {
+                        HttpCode = StatusCodes.Status404NotFound,
+                        Message = "List product is empty"
+                    });
+                }
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new ResponseModel
+                {
+                    HttpCode = StatusCodes.Status400BadRequest,
+                    Message = ex.Message
+                });
+            }
         }
 
         [HttpGet("{id}")]
-        public Task<IActionResult> GetProductById(int id)
+        [Authorize]
+        public async Task<IActionResult> GetProductById(int id)
         {
-            throw new NotImplementedException();
+            try
+            {
+                var result = await _productService.GetProductById(id);
+                if (result == null)
+                {
+                    return NotFound(new ResponseModel
+                    {
+                        HttpCode = StatusCodes.Status404NotFound,
+                        Message = "Product not found"
+                    });
+                }
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new ResponseModel
+                {
+                    HttpCode = StatusCodes.Status400BadRequest,
+                    Message = ex.Message
+                });
+            }
         }
 
         [HttpPost]
-        public Task<IActionResult> CreateProduct()
+        [Authorize]
+        public async Task<IActionResult> CreateProduct([FromBody] ProductRequestModel productRequestModel)
         {
-            throw new NotImplementedException();
+            try
+            {
+                ProductModel productModel = new ProductModel()
+                {
+                    Name = productRequestModel.Name,
+                    Dimensions = productRequestModel.Dimensions,
+                    Material = productRequestModel.Material,
+                    StampId = productRequestModel.StampId,
+                };
+
+                var result = await _productService.CreateProduct(productModel);
+                if (result)
+                {
+                    return Ok(new ResponseModel
+                    {
+                         HttpCode = StatusCodes.Status200OK,
+                         Message = "Create successfully"
+                    });
+                }
+                return BadRequest(new ResponseModel
+                {
+                    HttpCode = StatusCodes.Status400BadRequest,
+                    Message = "Create failed"
+                });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new ResponseModel
+                {
+                    HttpCode = StatusCodes.Status400BadRequest,
+                    Message = ex.Message
+                });
+            }
         }
 
         [HttpPut("{id}")]
-        public Task<IActionResult> UpdateProduct(int id)
+        [Authorize]
+        public async Task<IActionResult> UpdateProduct(int id, [FromBody] ProductRequestModel productRequestModel)
         {
-            throw new NotImplementedException();
+            try
+            {
+                var product = await _productService.GetProductById(id);
+                if (product == null)
+                {
+                    return NotFound(new ResponseModel
+                    {
+                        HttpCode = StatusCodes.Status404NotFound,
+                        Message = "Product not found"
+                    });
+                }
+
+                ProductModel productModel = new ProductModel()
+                {
+                    Id = id,
+                    Name = productRequestModel.Name,
+                    Dimensions = productRequestModel.Dimensions,
+                    Material = productRequestModel.Material,
+                    StampId = productRequestModel.StampId,
+                };
+
+                var result = await _productService.UpdateProduct(productModel);
+                if (result)
+                {
+                    return Ok(new ResponseModel
+                    {
+                        HttpCode = StatusCodes.Status200OK,
+                        Message = "Update successfully"
+                    });
+                }
+                return BadRequest(new ResponseModel
+                {
+                    HttpCode = StatusCodes.Status400BadRequest,
+                    Message = "Update failed"
+                });
+            }
+            catch(Exception ex)
+            {
+                return BadRequest(new ResponseModel
+                {
+                    HttpCode = StatusCodes.Status400BadRequest,
+                    Message = ex.Message
+                });
+            }
         }
 
         [HttpDelete("{id}")]
-        public Task<IActionResult> DeleteProduct(int id)
+        [Authorize]
+        public async Task<IActionResult> DeleteProduct(int id)
         {
-            throw new NotImplementedException();
+            try
+            {
+                var result = await _productService.DeleteProduct(id);
+
+                if(result)
+                {
+                    return Ok(new ResponseModel
+                    {
+                        HttpCode = StatusCodes.Status200OK,
+                        Message = "Delete successfully"
+                    });
+                }
+                return BadRequest(new ResponseModel
+                {
+                    HttpCode = StatusCodes.Status400BadRequest,
+                    Message = "Detele failed"
+                });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new ResponseModel
+                {
+                    HttpCode = StatusCodes.Status400BadRequest,
+                    Message = ex.Message
+                });
+            }
         }
     }
 }

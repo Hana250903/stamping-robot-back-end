@@ -1,9 +1,13 @@
 ﻿namespace StampingRobot.API.ViewModels.RequestModels
 {
-    public class TaskAssignmentRequestModel
+    public class CreateTaskAssignmentRequestModel
     {
-        public DateTime TimeStamp { get; set; }
-        public string Action { get; set; } = null!;
+        public int JobId { get; set; }
+
+        public string Status { get; set; } = null!;
+
+        public string ImageCaptured { get; set; } = null!;
+
         public string Details { get; set; } = null!;
     }
 }

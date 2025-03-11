@@ -13,6 +13,10 @@ namespace StamingRobot.Repository.Commons
 
         public string? Name { get; set; }
 
+        public RobotStatus? Status { get; set; }
+
+        public bool? IsDelete { get; set; }
+
     }
 
     public class FilterUser
@@ -29,22 +33,40 @@ namespace StamingRobot.Repository.Commons
         public string? Size { get; set; }
 
         public string? InkColor { get; set; }
+
+        public bool? IsDelete { get; set; }
     }
 
     public class FilterTaskAssignment
     {
-        public DateTime? TimeStamp { get; set; }
-        //public string? Action { get; set; }
-        //public string? Details { get; set; }
+        public DateTime? StartDate { get; set; }
+
+        public DateTime? EndDate { get; set; }
+
+        public bool? IsDelete { get; set; }
     }
+
 
     public class FilterSession
     {
-        public string? Status { get; set; }
+        public StampingSessionStatus? Status { get; set; }
+
+        public bool? IsDelete { get; set; }
     }
 
     public class FilterStampingJob
     {
         public StampingJobStatus? Status { get; set; }
+
+        public bool? IsDelete { get; set; }
+    }
+
+    public class FilterProduct
+    {
+        public string? Name { get; set; } = null!;
+
+        public string? Material { get; set; } = null!;
+
+        public bool? IsDelete { get; set; }
     }
 }

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -27,6 +28,7 @@ namespace StampingRobot.API.Controllers
         }
 
         [HttpGet]
+        [Authorize]
         public async Task<IActionResult> GetRobotsPagingAsync([FromQuery] PaginationParameter paginationParameter,[FromQuery] FilterRobot filter)
         {
             try
@@ -70,6 +72,7 @@ namespace StampingRobot.API.Controllers
         }
 
         [HttpGet("{id}")]
+        [Authorize]
         public async Task<IActionResult> GetRobotByIdAsync(int id)
         {
             try
@@ -101,6 +104,7 @@ namespace StampingRobot.API.Controllers
         }
 
         [HttpPost]
+        [Authorize]
         public async Task<IActionResult> CreateRobotAsync([FromBody] RobotRequestModel robotRequestModel)
         {
             try
@@ -109,7 +113,6 @@ namespace StampingRobot.API.Controllers
                 {
                     Name = robotRequestModel.Name,
                     Model = robotRequestModel.Model,
-                    Status = robotRequestModel.Status
                 };
                 var result = await _robotService.CreateRobotAsync(robotModel);
                 if (result)
@@ -126,6 +129,95 @@ namespace StampingRobot.API.Controllers
                     {
                         HttpCode = StatusCodes.Status400BadRequest,
                         Message = "Create robot failed"
+                    });
+                }
+            }
+            catch (Exception ex)
+            {
+                var responseModel = new ResponseModel()
+                {
+                    HttpCode = StatusCodes.Status404NotFound,
+                    Message = ex.Message
+                };
+                return BadRequest(responseModel);
+            }
+        }
+
+        [HttpPut("{id}")]
+        [Authorize]
+        public async Task<IActionResult> UpdateRobotAsync(int id, [FromBody] UpdateRobotRequestModel updateRobotRequestModel)
+        {
+            try
+            {
+                var robot = await _robotService.GetRobotByIdAsync(id);
+                if (robot == null)
+                {
+                    return NotFound(new ResponseModel
+                    {
+                        HttpCode = StatusCodes.Status404NotFound,
+                        Message = "Robot is not found"
+                    });
+                }
+
+                var robotModel = new RobotModel
+                {
+                    Id = id,
+                    Name = updateRobotRequestModel.Name,
+                    Status = updateRobotRequestModel.Status
+                };
+
+                var result = await _robotService.UpdateRobotAsync(robotModel);
+
+                if (result)
+                {
+                    return Ok(new ResponseModel
+                    {
+                        HttpCode = StatusCodes.Status200OK,
+                        Message = "Update robot successfully"
+                    });
+                }
+                else
+                {
+                    return BadRequest(new ResponseModel
+                    {
+                        HttpCode = StatusCodes.Status400BadRequest,
+                        Message = "Update robot failed"
+                    });
+                }
+            }
+            catch (Exception ex)
+            {
+                var responseModel = new ResponseModel()
+                {
+                    HttpCode = StatusCodes.Status404NotFound,
+                    Message = ex.Message
+                };
+                return BadRequest(responseModel);
+            }
+        }
+
+        [HttpDelete("{id}")]
+        [Authorize]
+        public async Task<IActionResult> DeleteRobotAsync(int id)
+        {
+            try
+            {
+                var result = await _robotService.DeleteRobotAsync(id);
+
+                if (result)
+                {
+                    return Ok(new ResponseModel
+                    {
+                        HttpCode = StatusCodes.Status200OK,
+                        Message = "Delete robot successfully"
+                    });
+                }
+                else
+                {
+                    return BadRequest(new ResponseModel
+                    {
+                        HttpCode = StatusCodes.Status400BadRequest,
+                        Message = "Delete robot failed"
                     });
                 }
             }
