@@ -11,6 +11,7 @@ using StampingRobot.API.ViewModels.ResponseModels;
 using StampingRobot.Service.BussinessModels;
 using StampingRobot.Service.Services;
 using StampingRobot.Service.Services.Interface;
+using StamingRobot.Repository.Entities;
 
 namespace StampingRobot.API.Controllers
 {
@@ -20,13 +21,11 @@ namespace StampingRobot.API.Controllers
     {
         private readonly IStampingJobService _stampingJobService;
         private readonly IHubContext<RobotHub> _hubContext;
-        private readonly ILogger<StampingJobModel> _logger;
 
-        public StampingJobController(IStampingJobService stampingJobService, IHubContext<RobotHub> hubContext, ILogger<StampingJobModel> logger)
+        public StampingJobController(IStampingJobService stampingJobService, IHubContext<RobotHub> hubContext)
         {
             _stampingJobService = stampingJobService;
             _hubContext = hubContext;
-            _logger = logger;
         }
 
         [HttpGet]
@@ -118,7 +117,6 @@ namespace StampingRobot.API.Controllers
                 if (result)
                 {
                     await _hubContext.Clients.All.SendAsync("Send", stampingJobModel.Parameters);
-                    _logger.LogInformation("✅ SignalR Message Sent: {Data}", System.Text.Json.JsonSerializer.Serialize(stampingJobModel.Parameters));
                     return Ok(new ResponseModel
                     {
                         HttpCode = StatusCodes.Status200OK,
@@ -220,5 +218,28 @@ namespace StampingRobot.API.Controllers
                 });
             }
         }
+
+        [HttpGet("connection")]
+        public async Task<IActionResult> ConnectToRobot([FromQuery] Parameters parameters)
+        {
+            try
+            {
+                await _hubContext.Clients.All.SendAsync("Send",parameters);
+
+                return Ok(new ResponseModel
+                {
+                    HttpCode = StatusCodes.Status200OK,
+                    Message = "Send successfully"
+                });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new ResponseModel
+                {
+                    HttpCode = StatusCodes.Status400BadRequest,
+                    Message = ex.Message
+                });
+            }
+        } 
     }
 }

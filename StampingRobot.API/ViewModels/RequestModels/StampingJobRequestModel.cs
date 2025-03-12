@@ -22,4 +22,19 @@ namespace StampingRobot.API.ViewModels.RequestModels
 
         public StampingJobParameters Parameters { get; set; } = null!;
     }
+
+    public class Parameters
+    {
+        public float Base { get; set; }
+
+        public float Upperarm { get; set; }
+
+        public float Forearm { get; set; }
+
+        public float Wrist { get; set; }
+
+        public float RotationWrist { get; set; }
+
+        public float Gripper { get; set; }
+    }
 }
