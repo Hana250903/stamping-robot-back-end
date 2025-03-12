@@ -225,10 +225,12 @@ namespace StampingRobot.Service.Services
         {
             await _unitOfWork.BeginTransactionAsync();
             string clientId = _configuration["Google:ClientId"];
+            string googleClientId = Environment.GetEnvironmentVariable("GOOGLE_CLIENT_ID");
+            Console.WriteLine($"Google Client ID: {googleClientId}");
 
             var setting = new GoogleJsonWebSignature.ValidationSettings
             {
-                Audience = new List<string> { clientId }
+                Audience = new List<string> { googleClientId }
             };
 
             var payload = await GoogleJsonWebSignature.ValidateAsync(credential, setting);
