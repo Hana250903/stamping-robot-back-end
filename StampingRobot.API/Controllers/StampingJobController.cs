@@ -1,8 +1,11 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.SignalR;
+using System.Text.Json;
 using Newtonsoft.Json;
 using StamingRobot.Repository.Commons;
+using StampingRobot.API.Hubs;
 using StampingRobot.API.ViewModels.RequestModels;
 using StampingRobot.API.ViewModels.ResponseModels;
 using StampingRobot.Service.BussinessModels;
@@ -16,10 +19,14 @@ namespace StampingRobot.API.Controllers
     public class StampingJobController : ControllerBase
     {
         private readonly IStampingJobService _stampingJobService;
+        private readonly IHubContext<RobotHub> _hubContext;
+        private readonly ILogger<StampingJobModel> _logger;
 
-        public StampingJobController(IStampingJobService stampingJobService)
+        public StampingJobController(IStampingJobService stampingJobService, IHubContext<RobotHub> hubContext, ILogger<StampingJobModel> logger)
         {
             _stampingJobService = stampingJobService;
+            _hubContext = hubContext;
+            _logger = logger;
         }
 
         [HttpGet]
@@ -110,6 +117,8 @@ namespace StampingRobot.API.Controllers
 
                 if (result)
                 {
+                    await _hubContext.Clients.All.SendAsync("Send", stampingJobModel.Parameters);
+                    _logger.LogInformation("✅ SignalR Message Sent: {Data}", System.Text.Json.JsonSerializer.Serialize(stampingJobModel.Parameters));
                     return Ok(new ResponseModel
                     {
                         HttpCode = StatusCodes.Status200OK,

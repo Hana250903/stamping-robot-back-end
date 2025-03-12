@@ -12,6 +12,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using StamingRobot.Repository.Commons;
+using StampingRobot.API.Hubs;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -85,6 +86,8 @@ builder.Services.AddCors(options =>
         });
 });
 
+builder.Services.AddSignalR();
+
 builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 builder.Services.AddSingleton<IActionContextAccessor, ActionContextAccessor>();
 
@@ -107,6 +110,8 @@ builder.Services.Configure<MailSettings>(builder.Configuration.GetSection("MailS
 
 var app = builder.Build();
 
+app.UseRouting();
+
 app.UseSwagger();
 app.UseSwaggerUI(c =>
 {
@@ -120,12 +125,13 @@ app.UseAuthentication();
 
 app.UseAuthorization();
 
-app.MapControllers();
-
-app.UseHealthChecks("/health");
-
 app.UseCors("app-cors");
 
+app.MapControllers();
+
+app.MapHub<RobotHub>("/robotHub");
+
+app.UseHealthChecks("/health");
 //app.UseExceptionHandler();
 
 app.Run();
