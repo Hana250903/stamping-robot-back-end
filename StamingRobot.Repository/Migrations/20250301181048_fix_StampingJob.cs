@@ -15,12 +15,6 @@ namespace StamingRobot.Repository.Migrations
         {
             migrationBuilder.DropTable(
                 name: "StampingJobParameters");
-
-            migrationBuilder.AddColumn<StampingJobParameters>(
-                name: "Parameters",
-                table: "StampingJob",
-                type: "jsonb",
-                nullable: false);
         }
 
         /// <inheritdoc />

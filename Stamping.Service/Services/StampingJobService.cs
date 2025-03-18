@@ -122,7 +122,7 @@ namespace StampingRobot.Service.Services
 
                 stampingJob.Description = stampingJobModel.Description;
                 stampingJob.Status = stampingJobModel.Status;
-                stampingJob.Parameters = stampingJobModel.Parameters;
+                stampingJob.Action = stampingJobModel.Action;
 
                 await _unitOfWork.StampingJobRepository.UpdateAsync(stampingJob);
                 var result = await _unitOfWork.SaveChanges();

@@ -167,12 +167,8 @@ public partial class StampingRobotContext : DbContext
             entity.Property(e => e.UpdatedAt)
                 .HasColumnType("timestamp with time zone")
                 .HasColumnName("UpdatedAt");
-            entity.Property(e => e.Parameters)
-                .HasColumnType("jsonb")
-                .HasConversion(
-                v => JsonSerializer.Serialize(v, new JsonSerializerOptions()), // Convert C# object -> JSON
-                v => JsonSerializer.Deserialize<StampingJobParameters>(v, new JsonSerializerOptions())!) // Convert JSON -> C# object
-                .HasColumnName("Parameters");
+            entity.Property(e => e.Action)
+                .HasColumnName("Action");
 
             entity.HasOne(d => d.Session).WithMany(p => p.StampingJobs)
                 .HasForeignKey(d => d.SessionId)

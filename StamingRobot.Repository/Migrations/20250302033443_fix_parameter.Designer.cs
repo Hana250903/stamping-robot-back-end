@@ -196,11 +196,6 @@ namespace StamingRobot.Repository.Migrations
                         .HasColumnType("boolean")
                         .HasColumnName("IsDeleted");
 
-                    b.Property<StampingJobParameters>("Parameters")
-                        .IsRequired()
-                        .HasColumnType("jsonb")
-                        .HasColumnName("Parameters");
-
                     b.Property<int>("SessionId")
                         .HasColumnType("integer")
                         .HasColumnName("SessionID");

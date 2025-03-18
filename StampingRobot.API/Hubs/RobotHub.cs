@@ -5,9 +5,9 @@ namespace StampingRobot.API.Hubs
 {
     public class RobotHub : Hub
     {
-        public async Task SendToRobot(StampingJobParameters parameters)
+        public async Task SendToRobot(string action)
         {
-            await Clients.All.SendAsync("Send", parameters);
+            await Clients.All.SendAsync("Send", action);
         }
     }
 }

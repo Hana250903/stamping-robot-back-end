@@ -109,14 +109,14 @@ namespace StampingRobot.API.Controllers
                     StepNumber = createStampingJobRequestModel.StepNumber,
                     Description = createStampingJobRequestModel.Description,
                     SessionId = createStampingJobRequestModel.SessionId,
-                    Parameters = createStampingJobRequestModel.Parameters
+                    Action = createStampingJobRequestModel.Action
                 };
 
                 var result = await _stampingJobService.CreateStampingJobAsync(stampingJobModel);
 
                 if (result)
                 {
-                    await _hubContext.Clients.All.SendAsync("Send", stampingJobModel.Parameters);
+                    await _hubContext.Clients.All.SendAsync("Send", stampingJobModel.Action);
                     return Ok(new ResponseModel
                     {
                         HttpCode = StatusCodes.Status200OK,
@@ -153,7 +153,7 @@ namespace StampingRobot.API.Controllers
                     Id = id,
                     Description = updateStampingJobRequestModel.Description,
                     Status = updateStampingJobRequestModel.Status,
-                    Parameters = updateStampingJobRequestModel.Parameters
+                    Action = updateStampingJobRequestModel.Action
                 };
 
                 var result = await _stampingJobService.UpdateStampingJobAsync(stampingJobModel);
@@ -220,11 +220,11 @@ namespace StampingRobot.API.Controllers
         }
 
         [HttpGet("connection")]
-        public async Task<IActionResult> ConnectToRobot([FromQuery] Parameters parameters)
+        public async Task<IActionResult> ConnectToRobot([FromQuery] string action)
         {
             try
             {
-                await _hubContext.Clients.All.SendAsync("Send",parameters);
+                await _hubContext.Clients.All.SendAsync("Send",action);
 
                 return Ok(new ResponseModel
                 {

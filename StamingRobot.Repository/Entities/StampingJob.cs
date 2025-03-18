@@ -13,25 +13,10 @@ public partial class StampingJob: BaseEntity
 
     public string Status { get; set; } = null!;
 
-    public StampingJobParameters Parameters { get; set; } = null!;
+    public string Action { get; set; } = null!;
 
     public virtual StampingSession Session { get; set; } = null!;
 
     public virtual ICollection<TaskAssignment> TaskAssignments { get; set; } = new List<TaskAssignment>();
 
-}
-
-public class StampingJobParameters
-{
-    public float Base { get; set; }
-
-    public float Upperarm { get; set; }
-
-    public float Forearm { get; set; }
-
-    public float Wrist { get; set; }
-
-    public float RotationWrist { get; set; }
-
-    public float Gripper { get; set; }
 }

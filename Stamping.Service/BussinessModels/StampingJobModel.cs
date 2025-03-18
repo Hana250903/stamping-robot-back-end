@@ -17,6 +17,6 @@ namespace StampingRobot.Service.BussinessModels
 
         public string Status { get; set; } = null!;
 
-        public StampingJobParameters Parameters { get; set; } = null!;
+        public string Action { get; set; } = null!;
     }
 }
