@@ -18,5 +18,7 @@ namespace StampingRobot.Service.BussinessModels
         public int? RobotId { get; set; }
 
         public int? ProductId { get; set; }
+
+        public virtual ICollection<StampingJob> StampingJobs { get; set; } = new List<StampingJob>();
     }
 }

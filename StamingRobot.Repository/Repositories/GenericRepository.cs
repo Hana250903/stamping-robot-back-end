@@ -85,10 +85,23 @@ namespace StamingRobot.Repository.Repositories
             return await _dbContext.Database.BeginTransactionAsync();
         }
 
-        public async Task<List<TEntity>?> GetByConditionAsync(Expression<Func<TEntity, bool>> condition)
+        public async Task<List<TEntity>?> GetByConditionAsync(Expression<Func<TEntity, bool>>? condition = null, Func<IQueryable<TEntity>, IQueryable<TEntity>>? include = null, Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>>? orderBy = null)
         {
-            var result = await _dbSet.AsNoTracking().Where(condition).ToListAsync();
-            return result;
+            IQueryable<TEntity> query = _dbSet.AsNoTracking();
+            if (condition != null)
+            {
+                query = query.Where(condition);
+            }
+            if (include != null)
+            {
+                query = include(query);
+            }
+            if (orderBy != null)
+            {
+                query = orderBy(query);
+            }
+
+            return await query.ToListAsync();
         }
 
         public async Task<TEntity?> GetLastInsertedAsync()
@@ -97,9 +110,15 @@ namespace StamingRobot.Repository.Repositories
             return result;
         }
 
-        public async Task<TEntity?> FindAsync(Expression<Func<TEntity, bool>> predicate)
+        public async Task<TEntity?> FindAsync(Expression<Func<TEntity, bool>> predicate, Func<IQueryable<TEntity>, IQueryable<TEntity>>? include = null)
         {
-            return await _dbSet.AsNoTracking().FirstOrDefaultAsync(predicate);
+            IQueryable<TEntity> query = _dbSet.AsNoTracking();
+            if (include != null)
+            {
+                query = include(query);
+            }
+
+            return await query.FirstOrDefaultAsync(predicate);
         }
     }
 }

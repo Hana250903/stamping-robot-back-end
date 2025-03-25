@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Microsoft.EntityFrameworkCore;
 using StamingRobot.Repository.Commons;
 using StamingRobot.Repository.Entities;
 using StamingRobot.Repository.Enum;
@@ -78,7 +79,7 @@ namespace StampingRobot.Service.Services
         {
             try
             {
-                var stampingSession = await _unitOfWork.StampingSessionRepository.GetByIdAsync(id);
+                var stampingSession = await _unitOfWork.StampingSessionRepository.FindAsync(c => c.Id.Equals(id), include => include.Include(c => c.StampingJobs));
                 if (stampingSession == null)
                 {
                     return null;
@@ -98,7 +99,8 @@ namespace StampingRobot.Service.Services
             try
             {
                 var list = await _unitOfWork.StampingSessionRepository.GetByConditionAsync(c => (c.Status.Equals(filterSession.Status.ToString()) || filterSession.Status == null)
-                                    && (c.IsDeleted.Equals(filterSession.IsDelete)|| filterSession.IsDelete == null));
+                                    && (c.IsDeleted.Equals(filterSession.IsDelete)|| filterSession.IsDelete == null), 
+                                    i => i.Include(c => c.StampingJobs));
 
                 var result = list.Skip((paginationParameter.PageIndex - 1) * paginationParameter.PageSize)
                                 .Take(paginationParameter.PageSize)

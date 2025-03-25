@@ -23,11 +23,11 @@ namespace StamingRobot.Repository.Repositories.Interface
         Task<int> PermanentDeletedListAsync(List<TEntity> entities);
 
         Task<IDbContextTransaction> BeginTransactionAsync();
-        Task<List<TEntity>?> GetByConditionAsync(Expression<Func<TEntity, bool>> condition);
+        Task<List<TEntity>?> GetByConditionAsync(Expression<Func<TEntity, bool>>? condition = null, Func<IQueryable<TEntity>, IQueryable<TEntity>>? include = null, Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>>? orderBy = null);
 
         Task<TEntity?> GetLastInsertedAsync();
 
-        Task<TEntity?> FindAsync(Expression<Func<TEntity, bool>> predicate);
+        Task<TEntity?> FindAsync(Expression<Func<TEntity, bool>> predicate, Func<IQueryable<TEntity>, IQueryable<TEntity>>? include = null);
 
     }
 }

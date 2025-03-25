@@ -218,28 +218,5 @@ namespace StampingRobot.API.Controllers
                 });
             }
         }
-
-        [HttpGet("connection")]
-        public async Task<IActionResult> ConnectToRobot([FromQuery] string action)
-        {
-            try
-            {
-                await _hubContext.Clients.All.SendAsync("Send",action);
-
-                return Ok(new ResponseModel
-                {
-                    HttpCode = StatusCodes.Status200OK,
-                    Message = "Send successfully"
-                });
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(new ResponseModel
-                {
-                    HttpCode = StatusCodes.Status400BadRequest,
-                    Message = ex.Message
-                });
-            }
-        } 
     }
 }

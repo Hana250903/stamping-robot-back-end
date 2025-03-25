@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Text.Json.Serialization;
 
 namespace StamingRobot.Repository.Entities;
 
@@ -15,6 +16,7 @@ public partial class StampingJob: BaseEntity
 
     public string Action { get; set; } = null!;
 
+    [JsonIgnore]
     public virtual StampingSession Session { get; set; } = null!;
 
     public virtual ICollection<TaskAssignment> TaskAssignments { get; set; } = new List<TaskAssignment>();

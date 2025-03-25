@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
 using StamingRobot.Repository.Commons;
 using StampingRobot.API.ViewModels.RequestModels;
 using StampingRobot.API.ViewModels.ResponseModels;
@@ -36,6 +37,17 @@ namespace StampingRobot.API.Controllers
                 }
                 else
                 {
+                    var metadata = new
+                    {
+                        result.TotalCount,
+                        result.PageSize,
+                        result.CurrentPage,
+                        result.TotalPages,
+                        result.HasNext,
+                        result.HasPrevious
+                    };
+
+                    Response.Headers.Add("X-Pagination", JsonConvert.SerializeObject(metadata));
                     return Ok(result);
                 }
             }

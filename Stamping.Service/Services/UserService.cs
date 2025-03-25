@@ -224,13 +224,14 @@ namespace StampingRobot.Service.Services
         public async Task<AuthenModel> LoginWithGoogle(string credential)
         {
             await _unitOfWork.BeginTransactionAsync();
-            string clientId = _configuration["Google:ClientId"];
-            string googleClientId = Environment.GetEnvironmentVariable("GOOGLE_CLIENT_ID");
+            string clientId = _configuration["Google:ClientId"];//appsetting
+            string googleClientId = Environment.GetEnvironmentVariable("GOOGLE_CLIENT_ID");//deploy azure
             Console.WriteLine($"Google Client ID: {googleClientId}");
 
             var setting = new GoogleJsonWebSignature.ValidationSettings
             {
-                Audience = new List<string> { googleClientId }
+                Audience = new List<string> { clientId }
+                //Audience = new List<string> { googleClientId }
             };
 
             var payload = await GoogleJsonWebSignature.ValidateAsync(credential, setting);

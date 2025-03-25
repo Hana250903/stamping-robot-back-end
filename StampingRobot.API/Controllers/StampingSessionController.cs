@@ -1,8 +1,10 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.SignalR;
 using Newtonsoft.Json;
 using StamingRobot.Repository.Commons;
+using StampingRobot.API.Hubs;
 using StampingRobot.API.ViewModels.RequestModels;
 using StampingRobot.API.ViewModels.ResponseModels;
 using StampingRobot.Service.BussinessModels;
@@ -18,11 +20,13 @@ namespace StampingRobot.API.Controllers
     {
         private readonly IStampingSessionService _stampingSessionService;
         private readonly ICurentUserService _curentUserService;
+        private readonly IHubContext<RobotHub> _hubContext;
 
-        public StampingSessionController(IStampingSessionService stampingSessionService, ICurentUserService curentUserService)
+        public StampingSessionController(IStampingSessionService stampingSessionService, ICurentUserService curentUserService, IHubContext<RobotHub> hubContext)
         {
             _stampingSessionService = stampingSessionService;
             _curentUserService = curentUserService;
+            _hubContext = hubContext;
         }
 
         [HttpGet]
@@ -245,6 +249,31 @@ namespace StampingRobot.API.Controllers
                         Message = "Delete stamping session failed"
                     });
                 }
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new ResponseModel
+                {
+                    HttpCode = StatusCodes.Status400BadRequest,
+                    Message = ex.Message
+                });
+            }
+        }
+
+        [HttpGet("connection")]
+        public async Task<IActionResult> ConnectToRobot([FromQuery] int sessionId)
+        {
+            try
+            {
+                var session = await _stampingSessionService.GetStampingSessionById(sessionId);
+
+                await _hubContext.Clients.All.SendAsync("Send", session);
+
+                return Ok(new ResponseModel
+                {
+                    HttpCode = StatusCodes.Status200OK,
+                    Message = "Send successfully"
+                });
             }
             catch (Exception ex)
             {
