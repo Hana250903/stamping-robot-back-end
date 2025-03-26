@@ -44,14 +44,13 @@ namespace StamingRobot.Repository.Repositories
             _dbSet.Update(entity);
         }
 
-        public async Task<int> SoftDeleteRangeAsync(List<TEntity> entities)
+        public async Task SoftDeleteRangeAsync(List<TEntity> entities)
         {
             foreach (var entity in entities)
             {
                 entity.IsDeleted = true;
             }
             _dbSet.UpdateRange(entities);
-            return await _dbContext.SaveChangesAsync();
         }
 
         public async Task UpdateAsync(TEntity entity)
@@ -59,25 +58,22 @@ namespace StamingRobot.Repository.Repositories
             _dbSet.Update(entity);
         }
 
-        public async Task<int> UpdateRangeAsync(List<TEntity> entities)
+        public async Task UpdateRangeAsync(List<TEntity> entities)
         {
             _dbSet.UpdateRange(entities);
-            return await _dbContext.SaveChangesAsync();
         }
 
-        public async Task<int> PermanentDeletedAsync(TEntity entity)
+        public async Task PermanentDeletedAsync(TEntity entity)
         {
             _dbSet.Remove(entity);
-            return await _dbContext.SaveChangesAsync();
         }
 
-        public async Task<int> PermanentDeletedListAsync(List<TEntity> entities)
+        public async Task PermanentDeletedListAsync(List<TEntity> entities)
         {
             foreach (var entity in entities)
             {
                 _dbSet.Remove(entity);
             }
-            return await _dbContext.SaveChangesAsync();
         }
 
         public async Task<IDbContextTransaction> BeginTransactionAsync()

@@ -16,11 +16,11 @@ namespace StamingRobot.Repository.Repositories.Interface
         Task UpdateAsync(TEntity entity);
         Task SoftDeleteAsync(TEntity entity);
         Task AddRangeAsync(List<TEntity> entities);
-        Task<int> UpdateRangeAsync(List<TEntity> entities);
-        Task<int> SoftDeleteRangeAsync(List<TEntity> entities);
-        Task<int> PermanentDeletedAsync(TEntity entity);
+        Task UpdateRangeAsync(List<TEntity> entities);
+        Task SoftDeleteRangeAsync(List<TEntity> entities);
+        Task PermanentDeletedAsync(TEntity entity);
 
-        Task<int> PermanentDeletedListAsync(List<TEntity> entities);
+        Task PermanentDeletedListAsync(List<TEntity> entities);
 
         Task<IDbContextTransaction> BeginTransactionAsync();
         Task<List<TEntity>?> GetByConditionAsync(Expression<Func<TEntity, bool>>? condition = null, Func<IQueryable<TEntity>, IQueryable<TEntity>>? include = null, Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>>? orderBy = null);

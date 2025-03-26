@@ -100,23 +100,22 @@ namespace StampingRobot.API.Controllers
 
         [HttpPost]
         [Authorize]
-        public async Task<IActionResult> CreateStampingJob([FromBody] CreateStampingJobRequestModel createStampingJobRequestModel)
+        public async Task<IActionResult> CreateStampingJob([FromBody] List<CreateStampingJobRequestModel> createStampingJobRequestModel)
         {
             try
             {
-                var stampingJobModel = new StampingJobModel
+                List<StampingJobModel> stampingJobModel = createStampingJobRequestModel.Select(c => new StampingJobModel
                 {
-                    StepNumber = createStampingJobRequestModel.StepNumber,
-                    Description = createStampingJobRequestModel.Description,
-                    SessionId = createStampingJobRequestModel.SessionId,
-                    Action = createStampingJobRequestModel.Action
-                };
+                    StepNumber = c.StepNumber,
+                    Description = c.Description,
+                    SessionId = c.SessionId,
+                    Action = c.Action
+                }).ToList();
 
                 var result = await _stampingJobService.CreateStampingJobAsync(stampingJobModel);
 
                 if (result)
                 {
-                    await _hubContext.Clients.All.SendAsync("Send", stampingJobModel.Action);
                     return Ok(new ResponseModel
                     {
                         HttpCode = StatusCodes.Status200OK,

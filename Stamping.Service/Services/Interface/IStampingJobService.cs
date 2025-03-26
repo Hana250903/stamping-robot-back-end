@@ -12,7 +12,7 @@ namespace StampingRobot.Service.Services.Interface
     {
         Task<Pagination<StampingJobModel>> GetStampingJobPagination(PaginationParameter paginationParameter, FilterStampingJob filter);
         Task<StampingJobModel> GetStampingJobByIdAsync(int id);
-        Task<bool> CreateStampingJobAsync(StampingJobModel stampingJobModel);
+        Task<bool> CreateStampingJobAsync(List<StampingJobModel >stampingJobModel);
         Task<bool> UpdateStampingJobAsync(StampingJobModel stampingJobModel);
         Task<bool> DeleteStampingJobAsync(int id);
     }

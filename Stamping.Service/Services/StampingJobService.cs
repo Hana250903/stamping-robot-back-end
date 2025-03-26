@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Microsoft.EntityFrameworkCore.Storage;
 using StamingRobot.Repository.Commons;
 using StamingRobot.Repository.Entities;
 using StamingRobot.Repository.Enum;
@@ -25,15 +26,18 @@ namespace StampingRobot.Service.Services
             _mapper = mapper;
         }
 
-        public async Task<bool> CreateStampingJobAsync(StampingJobModel stampingJobModel)
+        public async Task<bool> CreateStampingJobAsync(List<StampingJobModel> stampingJobModel)
         {
             await _unitOfWork.BeginTransactionAsync();
             try
             {
-                var stampingJob = _mapper.Map<StampingJob>(stampingJobModel);
-                stampingJob.Status = StampingJobStatus.Pending.ToString();
+                var stampingJob = _mapper.Map<List<StampingJob>>(stampingJobModel);
+                foreach (var item in stampingJob)
+                {
+                    item.Status = StampingJobStatus.Pending.ToString();
+                }
 
-                await _unitOfWork.StampingJobRepository.AddAsync(stampingJob);
+                await _unitOfWork.StampingJobRepository.AddRangeAsync(stampingJob);
                 var result = await _unitOfWork.SaveChanges();
 
                 if (result > 0)
