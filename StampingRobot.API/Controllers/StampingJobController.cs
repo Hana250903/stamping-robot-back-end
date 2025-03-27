@@ -217,5 +217,36 @@ namespace StampingRobot.API.Controllers
                 });
             }
         }
+
+        [HttpPatch("{id}")]
+        public async Task<IActionResult> UpdateStatus(int id, [FromBody] string status)
+        {
+            try
+            {
+                var result = await _stampingJobService.UpdateStatus(id, status);
+
+                if (result)
+                {
+                    return Ok(new ResponseModel
+                    {
+                        HttpCode = StatusCodes.Status200OK,
+                        Message = "Update status successfully"
+                    });
+                }
+                return NotFound(new ResponseModel
+                {
+                    HttpCode = StatusCodes.Status404NotFound,
+                    Message = "Stamping session not found"
+                });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new ResponseModel
+                {
+                    HttpCode = StatusCodes.Status400BadRequest,
+                    Message = ex.Message
+                });
+            }
+        }
     }
 }

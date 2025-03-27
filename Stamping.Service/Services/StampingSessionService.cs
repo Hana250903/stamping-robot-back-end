@@ -11,6 +11,7 @@ using StampingRobot.Service.Services.Interface;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -99,8 +100,10 @@ namespace StampingRobot.Service.Services
             try
             {
                 var list = await _unitOfWork.StampingSessionRepository.GetByConditionAsync(c => (c.Status.Equals(filterSession.Status.ToString()) || filterSession.Status == null)
-                                    && (c.IsDeleted.Equals(filterSession.IsDelete)|| filterSession.IsDelete == null), 
-                                    i => i.Include(c => c.StampingJobs));
+                                    && (c.IsDeleted.Equals(filterSession.IsDelete) || filterSession.IsDelete == null),
+                                    i => i.Include(c => c.StampingJobs),
+                                    i => (filterSession.Sort == true )? i.OrderByDescending(c => c.CreatedAt) : i.OrderBy(c => c.CreatedAt)
+                                    );
 
                 var result = list.Skip((paginationParameter.PageIndex - 1) * paginationParameter.PageSize)
                                 .Take(paginationParameter.PageSize)
@@ -158,6 +161,29 @@ namespace StampingRobot.Service.Services
                 var resultModel = _mapper.Map<List<StampingSessionModel>>(result);
 
                 return new Pagination<StampingSessionModel>(resultModel, count, paginationParameter.PageIndex, paginationParameter.PageSize);
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
+        public async Task<bool> UpdateStatus(int id, string status)
+        {
+            try
+            {
+                var stampingSession = await _unitOfWork.StampingSessionRepository.GetByIdAsync(id);
+
+                if (stampingSession == null)
+                {
+                    return false;
+                }
+
+                stampingSession.Status = status;
+                await _unitOfWork.StampingSessionRepository.UpdateAsync(stampingSession);
+                await _unitOfWork.SaveChanges();
+
+                return true;
             }
             catch (Exception ex)
             {

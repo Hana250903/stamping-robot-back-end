@@ -43,7 +43,8 @@ namespace StampingRobot.Service.Services
 
         public async Task<Pagination<UserModel>> GetUserPagination(PaginationParameter paginationParameter, FilterUser filterUser)
         {
-            var list = await _unitOfWork.UserRepository.GetByConditionAsync(c => (c.Role.Equals(filterUser.Role) || filterUser.Role == null) && (c.IsDeleted == filterUser.IsDelete || filterUser.IsDelete == null));
+            var list = await _unitOfWork.UserRepository.GetByConditionAsync(c => (c.Role.Equals(filterUser.Role) || filterUser.Role == null) && (c.IsDeleted == filterUser.IsDelete || filterUser.IsDelete == null),
+                                        i => (filterUser.Sort == true) ? i.OrderByDescending(c => c.CreatedAt) : i.OrderBy(c => c.CreatedAt));
 
             var result = list.Skip((paginationParameter.PageIndex - 1) * paginationParameter.PageSize)
                 .Take(paginationParameter.PageSize)

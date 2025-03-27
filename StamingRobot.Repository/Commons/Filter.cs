@@ -15,6 +15,8 @@ namespace StamingRobot.Repository.Commons
 
         public RobotStatus? Status { get; set; }
 
+        public bool? Sort { get; set; }
+
         public bool? IsDelete { get; set; }
 
     }
@@ -22,6 +24,8 @@ namespace StamingRobot.Repository.Commons
     public class FilterUser
     {
         public Role? Role { get; set; }
+
+        public bool? Sort { get; set; }
 
         public bool? IsDelete { get; set; }
     }
@@ -50,6 +54,8 @@ namespace StamingRobot.Repository.Commons
     public class FilterSession
     {
         public StampingSessionStatus? Status { get; set; }
+
+        public bool? Sort { get; set; }
 
         public bool? IsDelete { get; set; }
     }

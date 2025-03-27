@@ -81,7 +81,9 @@ namespace StampingRobot.Service.Services
             {
                 var list = await _unitOfWork.RobotRepository.GetByConditionAsync(c => (c.Model.Equals(filter.Model.ToString()) || filter.Model == null) &&
                                 (filter.Name == null || c.Name.Contains(filter.Name)) && (c.Status.Equals(filter.Status.ToString()) || filter.Status == null)
-                                && (c.IsDeleted.Equals(filter.IsDelete) || filter.IsDelete == null));
+                                && (c.IsDeleted.Equals(filter.IsDelete) || filter.IsDelete == null),
+                                i => (filter.Sort == true) ? i.OrderByDescending(c => c.CreatedAt) : i.OrderBy(c => c.CreatedAt)
+                                );
 
                 var result = list.Skip((paginationParameter.PageIndex - 1) * paginationParameter.PageSize)
                     .Take(paginationParameter.PageSize)

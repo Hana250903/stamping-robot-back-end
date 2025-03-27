@@ -15,5 +15,6 @@ namespace StampingRobot.Service.Services.Interface
         Task<bool> CreateStampingJobAsync(List<StampingJobModel >stampingJobModel);
         Task<bool> UpdateStampingJobAsync(StampingJobModel stampingJobModel);
         Task<bool> DeleteStampingJobAsync(int id);
+        Task<bool> UpdateStatus(int id, string status);
     }
 }

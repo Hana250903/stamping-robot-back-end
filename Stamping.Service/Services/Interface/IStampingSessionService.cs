@@ -17,5 +17,8 @@ namespace StampingRobot.Service.Services.Interface
         Task<bool> UpdateStampingSession(StampingSessionModel stampingSessionModel);
         Task<bool> DeleteStampingSession(int id);
         Task<Pagination<StampingSessionModel>> GetStampingSessionsByUser(PaginationParameter paginationParameter, FilterSession filterSession, int id);
+
+        Task<bool> UpdateStatus(int id, string status);
+
     }
 }
