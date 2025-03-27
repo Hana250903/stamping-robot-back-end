@@ -144,12 +144,13 @@ namespace StampingRobot.API.Controllers
 
                 var result = await _stampingSessionService.CreateStampingSession(stampingSession);
 
-                if (result)
+                if (result != null)
                 {
                     return Ok(new ResponseModel
                     {
                         HttpCode = StatusCodes.Status200OK,
-                        Message = "Create stamping session successfully"
+                        Message = "Create stamping session successfully",
+                        Id = result.Id
                     });
                 }
                 else
@@ -203,7 +204,8 @@ namespace StampingRobot.API.Controllers
                     return Ok(new ResponseModel
                     {
                         HttpCode = StatusCodes.Status200OK,
-                        Message = "Update stamping session successfully"
+                        Message = "Update stamping session successfully",
+                        Id = id
                     });
                 }
                 else

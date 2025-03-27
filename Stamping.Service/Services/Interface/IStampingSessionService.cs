@@ -13,7 +13,7 @@ namespace StampingRobot.Service.Services.Interface
     {
         Task<Pagination<StampingSessionModel>> GetStampingSessions(PaginationParameter paginationParameter, FilterSession filterSession);
         Task<StampingSessionModel> GetStampingSessionById(int id);
-        Task<bool> CreateStampingSession(StampingSessionModel stampingSessionModel);
+        Task<StampingSessionModel> CreateStampingSession(StampingSessionModel stampingSessionModel);
         Task<bool> UpdateStampingSession(StampingSessionModel stampingSessionModel);
         Task<bool> DeleteStampingSession(int id);
         Task<Pagination<StampingSessionModel>> GetStampingSessionsByUser(PaginationParameter paginationParameter, FilterSession filterSession, int id);

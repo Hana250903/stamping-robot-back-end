@@ -27,7 +27,7 @@ namespace StampingRobot.Service.Services
             _unitOfWork = unitOfWork;
             _mapper = mapper;
         }
-        public async Task<bool> CreateStampingSession(StampingSessionModel stampingSessionModel)
+        public async Task<StampingSessionModel> CreateStampingSession(StampingSessionModel stampingSessionModel)
         {
             await _unitOfWork.BeginTransactionAsync();
             try
@@ -35,15 +35,16 @@ namespace StampingRobot.Service.Services
                 var stampingSession = _mapper.Map<StampingSession>(stampingSessionModel);
                 stampingSession.Status = StampingSessionStatus.NotStarted.ToString();
 
-                await _unitOfWork.StampingSessionRepository.AddAsync(stampingSession);
+                var item = await _unitOfWork.StampingSessionRepository.AddAsync(stampingSession);
                 var result = await _unitOfWork.SaveChanges();
-
+                
                 if (result > 0)
                 {
+                    var itemModel = _mapper.Map<StampingSessionModel>(item);
                     await _unitOfWork.CommitTransactionAsync();
-                    return true;
+                    return itemModel;
                 }
-                return false;
+                return null;
             }
             catch (Exception ex)
             {

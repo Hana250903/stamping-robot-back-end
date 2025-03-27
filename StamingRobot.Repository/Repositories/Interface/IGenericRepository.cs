@@ -12,7 +12,7 @@ namespace StamingRobot.Repository.Repositories.Interface
     public interface IGenericRepository<TEntity> where TEntity : BaseEntity
     {
         Task<TEntity?> GetByIdAsync(int id);
-        Task AddAsync(TEntity entity);
+        Task<TEntity?> AddAsync(TEntity entity);
         Task UpdateAsync(TEntity entity);
         Task SoftDeleteAsync(TEntity entity);
         Task AddRangeAsync(List<TEntity> entities);
