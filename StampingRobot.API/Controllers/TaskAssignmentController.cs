@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using StamingRobot.Repository.Commons;
@@ -22,6 +23,7 @@ namespace StampingRobot.API.Controllers
         }
 
         [HttpGet]
+        [Authorize]
         public async Task<IActionResult> GetTaskAssignmentPaging([FromQuery] PaginationParameter paginationParameter, [FromQuery] FilterTaskAssignment filterTaskAssignment)
         {
             try
@@ -62,6 +64,7 @@ namespace StampingRobot.API.Controllers
         }
 
         [HttpGet("{id}")]
+        [Authorize]
         public async Task<IActionResult> GetTaskAssignmentById(int id)
         {
             try
@@ -130,6 +133,7 @@ namespace StampingRobot.API.Controllers
         }
 
         [HttpDelete("{id}")]
+        [Authorize]
         public async Task<IActionResult> DeleteTaskAssignment(int id)
         {
             try

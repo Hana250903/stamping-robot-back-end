@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using StamingRobot.Repository.Commons;
@@ -25,6 +26,7 @@ namespace StampingRobot.API.Controllers
         }
 
         [HttpGet]
+        [Authorize]
         public async Task<IActionResult> GetUserWithFilter([FromQuery] PaginationParameter paginationParameter, [FromQuery] FilterUser filterUser)
         {
             try
@@ -68,6 +70,7 @@ namespace StampingRobot.API.Controllers
         }
 
         [HttpGet("{Id}")]
+        [Authorize]
         public async Task<IActionResult> GetUserById(int Id)
         {
             try
@@ -95,6 +98,7 @@ namespace StampingRobot.API.Controllers
         }
 
         [HttpPut]
+        [Authorize(Roles = "Employee")]
         public async Task<IActionResult> UpdateUser([FromBody]UserUpdateRequestModel updateUserModel)
         {
             try
@@ -137,6 +141,7 @@ namespace StampingRobot.API.Controllers
         }
 
         [HttpDelete("{Id}")]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> DeleteUser(int Id)
         {
             try

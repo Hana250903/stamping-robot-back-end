@@ -104,7 +104,7 @@ namespace StampingRobot.API.Controllers
         }
 
         [HttpPost]
-        [Authorize]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> CreateRobotAsync([FromBody] RobotRequestModel robotRequestModel)
         {
             try
@@ -144,7 +144,7 @@ namespace StampingRobot.API.Controllers
         }
 
         [HttpPut("{id}")]
-        [Authorize]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> UpdateRobotAsync(int id, [FromBody] UpdateRobotRequestModel updateRobotRequestModel)
         {
             try
@@ -197,7 +197,7 @@ namespace StampingRobot.API.Controllers
         }
 
         [HttpDelete("{id}")]
-        [Authorize]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> DeleteRobotAsync(int id)
         {
             try

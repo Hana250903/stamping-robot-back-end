@@ -99,7 +99,7 @@ namespace StampingRobot.API.Controllers
         }
 
         [HttpPost]
-        [Authorize]
+        [Authorize(Roles = "Employee")]
         public async Task<IActionResult> CreateStampingJob([FromBody] List<CreateStampingJobRequestModel> createStampingJobRequestModel)
         {
             try
@@ -142,7 +142,7 @@ namespace StampingRobot.API.Controllers
         }
 
         [HttpPut("{id}")]
-        [Authorize]
+        [Authorize(Roles = "Employee")]
         public async Task<IActionResult> UpdateStampingJob(int id, [FromBody] UpdateStampingJobRequestModel updateStampingJobRequestModel)
         {
             try
@@ -185,7 +185,7 @@ namespace StampingRobot.API.Controllers
         }
 
         [HttpDelete("{id}")]
-        [Authorize]
+        [Authorize(Roles = "Employee")]
         public async Task<IActionResult> DeleteStampingJob(int id)
         {
             try

@@ -101,7 +101,7 @@ namespace StampingRobot.API.Controllers
             }
         }
 
-        [HttpGet("{userId}/user")]
+        [HttpGet("user/{userId}")]
         [Authorize]
         public async Task<IActionResult> GetStampingSessionByUserId(int userId, [FromQuery] PaginationParameter paginationParameter, [FromQuery] FilterSession filterSession)
         {
@@ -129,7 +129,7 @@ namespace StampingRobot.API.Controllers
         }
 
         [HttpPost]
-        [Authorize]
+        [Authorize(Roles = "Employee")]
         public async Task<IActionResult> CreateStampingSession([FromBody] CreateStampingSessionRequestModel createStampingSession)
         {
             try
@@ -173,7 +173,7 @@ namespace StampingRobot.API.Controllers
         }
 
         [HttpPut("{id}")]
-        [Authorize]
+        [Authorize(Roles = "Employee")]
         public async Task<IActionResult> UpdateStampingSession(int id, [FromBody] UpdateStampingSessionRequestModel updateStampingSession)
         {
             try
@@ -228,7 +228,7 @@ namespace StampingRobot.API.Controllers
         }
 
         [HttpDelete("{id}")]
-        [Authorize]
+        [Authorize(Roles = "Employee")]
         public async Task<IActionResult> DeleteStampingSession(int id)
         {
             try
@@ -263,6 +263,7 @@ namespace StampingRobot.API.Controllers
         }
 
         [HttpGet("{id}/connection")]
+        [Authorize(Roles = "Employee")]
         public async Task<IActionResult> ConnectToRobot(int id)
         {
             try
@@ -293,6 +294,8 @@ namespace StampingRobot.API.Controllers
             try
             {
                 var result = await _stampingSessionService.UpdateStatus(id, status);
+
+                await _hubContext.Clients.All.SendAsync("SendToMobile", status);
 
                 if (result)
                 {
