@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
 using StamingRobot.Repository.Commons;
@@ -12,6 +13,7 @@ using StamingRobot.Repository.Entities;
 using StampingRobot.API.ViewModels.RequestModels;
 using StampingRobot.API.ViewModels.ResponseModels;
 using StampingRobot.Service.BussinessModels;
+using StampingRobot.Service.Services;
 using StampingRobot.Service.Services.Interface;
 
 namespace StampingRobot.API.Controllers
@@ -229,6 +231,37 @@ namespace StampingRobot.API.Controllers
                     Message = ex.Message
                 };
                 return BadRequest(responseModel);
+            }
+        }
+
+        [HttpPatch("{id}")]
+        public async Task<IActionResult> UpdateStatus(int id, [FromBody] string status)
+        {
+            try
+            {
+                var result = await _robotService.UpdateStatus(id, status);
+
+                if (result)
+                {
+                    return Ok(new ResponseModel
+                    {
+                        HttpCode = StatusCodes.Status200OK,
+                        Message = "Update status successfully"
+                    });
+                }
+                return NotFound(new ResponseModel
+                {
+                    HttpCode = StatusCodes.Status404NotFound,
+                    Message = "robot not found"
+                });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new ResponseModel
+                {
+                    HttpCode = StatusCodes.Status400BadRequest,
+                    Message = ex.Message
+                });
             }
         }
     }

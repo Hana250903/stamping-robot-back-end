@@ -142,5 +142,28 @@ namespace StampingRobot.Service.Services
                 throw ex;
             }
         }
+
+        public async Task<bool> UpdateStatus(int id, string status)
+        {
+            try
+            {
+                var robot = await _unitOfWork.RobotRepository.GetByIdAsync(id);
+
+                if (robot == null)
+                {
+                    return false;
+                }
+
+                robot.Status = status;
+                await _unitOfWork.RobotRepository.UpdateAsync(robot);
+                await _unitOfWork.SaveChanges();
+
+                return true;
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
     }
 }

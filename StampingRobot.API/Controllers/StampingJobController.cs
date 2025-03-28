@@ -236,7 +236,7 @@ namespace StampingRobot.API.Controllers
                 return NotFound(new ResponseModel
                 {
                     HttpCode = StatusCodes.Status404NotFound,
-                    Message = "Stamping session not found"
+                    Message = "Stamping job not found"
                 });
             }
             catch (Exception ex)

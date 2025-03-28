@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SignalR;
 using Newtonsoft.Json;
 using StamingRobot.Repository.Commons;
+using StamingRobot.Repository.Entities;
 using StampingRobot.API.Hubs;
 using StampingRobot.API.ViewModels.RequestModels;
 using StampingRobot.API.ViewModels.ResponseModels;
@@ -21,12 +22,14 @@ namespace StampingRobot.API.Controllers
         private readonly IStampingSessionService _stampingSessionService;
         private readonly ICurentUserService _curentUserService;
         private readonly IHubContext<RobotHub> _hubContext;
+        private readonly IRobotService _robot;
 
-        public StampingSessionController(IStampingSessionService stampingSessionService, ICurentUserService curentUserService, IHubContext<RobotHub> hubContext)
+        public StampingSessionController(IStampingSessionService stampingSessionService, ICurentUserService curentUserService, IHubContext<RobotHub> hubContext, IRobotService robot)
         {
             _stampingSessionService = stampingSessionService;
             _curentUserService = curentUserService;
             _hubContext = hubContext;
+            _robot = robot;
         }
 
         [HttpGet]
@@ -270,7 +273,7 @@ namespace StampingRobot.API.Controllers
             {
                 var session = await _stampingSessionService.GetStampingSessionById(id);
 
-                await _stampingSessionService.UpdateStatus((int)session.RobotId, "Working");
+                await _robot.UpdateStatus((int)session.RobotId, "Working");
 
                 await _hubContext.Clients.All.SendAsync("Send", session);
 
