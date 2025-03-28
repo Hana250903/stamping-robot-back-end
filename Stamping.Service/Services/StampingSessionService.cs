@@ -151,7 +151,7 @@ namespace StampingRobot.Service.Services
             {
                 var list = await _unitOfWork.StampingSessionRepository.GetByConditionAsync(c => (c.Status.Equals(filterSession.Status.ToString()) || filterSession.Status == null)
                                     && (c.IsDeleted.Equals(filterSession.IsDelete) || filterSession.IsDelete == null)
-                                    && (c.Id == id));
+                                    && (c.UserId == id), q => q.Include(c => c.StampingJobs));
 
                 var result = list.Skip((paginationParameter.PageIndex - 1) * paginationParameter.PageSize)
                                 .Take(paginationParameter.PageSize)

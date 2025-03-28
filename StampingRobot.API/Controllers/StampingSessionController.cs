@@ -270,6 +270,8 @@ namespace StampingRobot.API.Controllers
             {
                 var session = await _stampingSessionService.GetStampingSessionById(id);
 
+                await _stampingSessionService.UpdateStatus((int)session.RobotId, "Working");
+
                 await _hubContext.Clients.All.SendAsync("Send", session);
 
                 return Ok(new ResponseModel
