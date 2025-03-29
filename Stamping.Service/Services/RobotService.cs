@@ -157,8 +157,16 @@ namespace StampingRobot.Service.Services
                     return false;
                 }
 
-                robot.Status = status;
-                robot.UserId = userId;
+                if(userId == 0)
+                {
+                    robot.Status = status;
+                }
+                else
+                {
+                    robot.Status = status;
+                    robot.UserId = userId;
+                }
+                    
                 await _unitOfWork.RobotRepository.UpdateAsync(robot);
                 await _unitOfWork.SaveChanges();
 
