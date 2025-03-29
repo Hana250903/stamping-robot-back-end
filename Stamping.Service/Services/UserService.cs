@@ -231,8 +231,8 @@ namespace StampingRobot.Service.Services
 
             var setting = new GoogleJsonWebSignature.ValidationSettings
             {
-                Audience = new List<string> { clientId }
-                //Audience = new List<string> { googleClientId }
+                //Audience = new List<string> { clientId }
+                Audience = new List<string> { googleClientId }
             };
 
             var payload = await GoogleJsonWebSignature.ValidateAsync(credential, setting);
