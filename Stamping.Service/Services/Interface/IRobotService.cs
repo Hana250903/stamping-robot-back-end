@@ -21,6 +21,6 @@ namespace StampingRobot.Service.Services.Interface
 
         Task<bool> DeleteRobotAsync(int id);
 
-        Task<bool> UpdateStatus(int id, string status);
+        Task<bool> UpdateStatus(int id, int? userId,string status);
     }
 }

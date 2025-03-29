@@ -115,28 +115,5 @@ namespace StampingRobot.Service.Services
                 throw new Exception(ex.Message);
             }
         }
-
-        public async Task<bool> UpdateTaskAssignment(TaskAssignmentModel assignment)
-        {
-            await _unitOfWork.BeginTransactionAsync();
-            try
-            {
-                var taskAssignment = _mapper.Map<TaskAssignment>(assignment);
-
-                await _unitOfWork.TaskAssignmentRepository.UpdateAsync(taskAssignment);
-                var result = await _unitOfWork.SaveChanges();
-                if (result > 0)
-                {
-                    await _unitOfWork.CommitTransactionAsync();
-                    return true;
-                }
-                return false;
-            }
-            catch (Exception ex)
-            {
-                await _unitOfWork.RollbackTransactionAsync();
-                throw new Exception(ex.Message);
-            }
-        }
     }
 }

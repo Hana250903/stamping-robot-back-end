@@ -195,8 +195,6 @@ namespace StampingRobot.API.Controllers
                 {
                     Id = id,
                     Quantity = updateStampingSession.Quantity,
-                    Status = updateStampingSession.Status,
-                    RobotId = updateStampingSession.RobotId,
                     ProductId = updateStampingSession.ProductId
                 };
 
@@ -273,7 +271,9 @@ namespace StampingRobot.API.Controllers
             {
                 var session = await _stampingSessionService.GetStampingSessionById(id);
 
-                await _robot.UpdateStatus((int)session.RobotId, "Working");
+                var userId = _curentUserService.GetUserId();
+
+                await _robot.UpdateStatus((int)session.RobotId, userId, "Working");
 
                 await _hubContext.Clients.All.SendAsync("Send", session);
 

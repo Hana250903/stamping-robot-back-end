@@ -29,7 +29,13 @@ namespace StampingRobot.Service.Services
             await _unitOfWork.BeginTransactionAsync();
             try
             {
-                var product = _mapper.Map<Product>(productModel);
+                var model = await _unitOfWork.ProductRepository.FindAsync(c => c.Id == productModel.Id);
+                model.Name = productModel.Name;
+                model.Dimensions = productModel.Dimensions;
+                model.Material = productModel.Material;
+                model.StampId = productModel.StampId;
+
+                var product = _mapper.Map<Product>(model);
                 await _unitOfWork.ProductRepository.AddAsync(product);
                 var result = await _unitOfWork.SaveChanges();
                 if (result > 0)

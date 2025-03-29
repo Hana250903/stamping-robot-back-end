@@ -127,7 +127,14 @@ namespace StampingRobot.Service.Services
             await _unitOfWork.BeginTransactionAsync();
             try
             {
-                var stampingSession = _mapper.Map<StampingSession>(stampingSessionModel);
+                var model = await _unitOfWork.StampingSessionRepository.FindAsync(c => c.Id == stampingSessionModel.Id);
+                if (model == null){
+                    return false;
+                }
+                model.Quantity = stampingSessionModel.Quantity;
+                model.ProductId = stampingSessionModel.ProductId;
+
+                var stampingSession = _mapper.Map<StampingSession>(model);
                 await _unitOfWork.StampingSessionRepository.UpdateAsync(stampingSession);
                 var result = await _unitOfWork.SaveChanges();
 

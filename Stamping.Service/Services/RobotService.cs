@@ -125,7 +125,10 @@ namespace StampingRobot.Service.Services
             await _unitOfWork.BeginTransactionAsync();
             try
             {
-                var robot = _mapper.Map<Robot>(robotModel);
+                var model = await _unitOfWork.RobotRepository.FindAsync(c => c.Id == robotModel.Id);
+                model.Name = robotModel.Name;
+
+                var robot = _mapper.Map<Robot>(model);
 
                 await _unitOfWork.RobotRepository.UpdateAsync(robot);
                 var result = await _unitOfWork.SaveChanges();
@@ -143,7 +146,7 @@ namespace StampingRobot.Service.Services
             }
         }
 
-        public async Task<bool> UpdateStatus(int id, string status)
+        public async Task<bool> UpdateStatus(int id, int? userId, string status)
         {
             try
             {
@@ -155,6 +158,7 @@ namespace StampingRobot.Service.Services
                 }
 
                 robot.Status = status;
+                robot.UserId = userId;
                 await _unitOfWork.RobotRepository.UpdateAsync(robot);
                 await _unitOfWork.SaveChanges();
 

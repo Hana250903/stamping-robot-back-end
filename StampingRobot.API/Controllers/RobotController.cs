@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Infrastructure;
 using Newtonsoft.Json;
 using StamingRobot.Repository.Commons;
 using StamingRobot.Repository.Entities;
@@ -15,6 +16,7 @@ using StampingRobot.API.ViewModels.ResponseModels;
 using StampingRobot.Service.BussinessModels;
 using StampingRobot.Service.Services;
 using StampingRobot.Service.Services.Interface;
+using StampingRobot.Service.Ultils;
 
 namespace StampingRobot.API.Controllers
 {
@@ -23,10 +25,12 @@ namespace StampingRobot.API.Controllers
     public class RobotController : ControllerBase
     {
         private readonly IRobotService _robotService;
+        private readonly ICurentUserService _curentUserService;
 
-        public RobotController(IRobotService robotService)
+        public RobotController(IRobotService robotService, ICurentUserService curentUserService)
         {
             _robotService = robotService;
+            _curentUserService = curentUserService;
         }
 
         [HttpGet]
@@ -165,7 +169,6 @@ namespace StampingRobot.API.Controllers
                 {
                     Id = id,
                     Name = updateRobotRequestModel.Name,
-                    Status = updateRobotRequestModel.Status
                 };
 
                 var result = await _robotService.UpdateRobotAsync(robotModel);
@@ -239,7 +242,7 @@ namespace StampingRobot.API.Controllers
         {
             try
             {
-                var result = await _robotService.UpdateStatus(id, status);
+                var result = await _robotService.UpdateStatus(id, 0, status);
 
                 if (result)
                 {

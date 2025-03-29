@@ -13,7 +13,6 @@ namespace StampingRobot.Service.Services.Interface
         Task<Pagination<TaskAssignmentModel>> GetTaskAssignments(PaginationParameter paginationParameter, FilterTaskAssignment filterTaskAssignment);
         Task<TaskAssignmentModel> GetTaskAssignmentById(int id);
         Task<bool> CreateTaskAssignment(TaskAssignmentModel assignment);
-        Task<bool> UpdateTaskAssignment(TaskAssignmentModel assignment);
         Task<bool> DeleteTaskAssignment(int id);
     }
 }

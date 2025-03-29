@@ -11,7 +11,5 @@
     public class UpdateRobotRequestModel
     {
         public string Name { get; set; } = null!;
-
-        public string Status { get; set; } = null!;
     }
 }

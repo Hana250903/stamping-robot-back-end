@@ -119,7 +119,12 @@ namespace StampingRobot.Service.Services
             await _unitOfWork.BeginTransactionAsync();
             try
             {
-                var stamp = _mapper.Map<Stamp>(model);
+                var stampModel = await _unitOfWork.StampRepository.FindAsync(c => c.Id == model.Id);
+                stampModel.Size = model.Size;
+                stampModel.Type = model.Type;
+                stampModel.InkColor = model.InkColor;
+
+                var stamp = _mapper.Map<Stamp>(stampModel);
                 await _unitOfWork.StampRepository.UpdateAsync(stamp);
                 var result = await _unitOfWork.SaveChanges();
                 if (result > 0)
