@@ -146,7 +146,7 @@ namespace StampingRobot.Service.Services
             }
         }
 
-        public async Task<bool> UpdateStatus(int id, string status)
+        public async Task<bool> UpdateStatus(int id, int? userId, string status)
         {
             try
             {
@@ -158,6 +158,7 @@ namespace StampingRobot.Service.Services
                 }
 
                 robot.Status = status;
+                robot.UserId = userId;
                 await _unitOfWork.RobotRepository.UpdateAsync(robot);
                 await _unitOfWork.SaveChanges();
 

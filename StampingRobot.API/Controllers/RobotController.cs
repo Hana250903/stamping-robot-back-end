@@ -242,7 +242,7 @@ namespace StampingRobot.API.Controllers
         {
             try
             {
-                var result = await _robotService.UpdateStatus(id, status);
+                var result = await _robotService.UpdateStatus(id, 0, status);
 
                 if (result)
                 {
